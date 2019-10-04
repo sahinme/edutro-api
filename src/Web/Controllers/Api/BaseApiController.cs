@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Microsoft.eShopWeb.Web.Controllers.Api
+namespace Microsoft.EgitimAPI.Web.Controllers.Api
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

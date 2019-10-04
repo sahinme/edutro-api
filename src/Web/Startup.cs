@@ -6,11 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using Microsoft.eShopWeb.ApplicationCore.Services;
-using Microsoft.eShopWeb.Infrastructure.Data;
-using Microsoft.eShopWeb.Infrastructure.Logging;
-using Microsoft.eShopWeb.Infrastructure.Services;
 using Microsoft.eShopWeb.Web.HealthChecks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +16,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
+using Microsoft.EgitimAPI;
+using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
+using Microsoft.EgitimAPI.ApplicationCore.Services;
+using Microsoft.EgitimAPI.Infrastructure.Data;
+using Microsoft.EgitimAPI.Infrastructure.Logging;
+using Microsoft.EgitimAPI.Infrastructure.Services;
 
 namespace Microsoft.eShopWeb.Web
 {
@@ -62,7 +63,7 @@ namespace Microsoft.eShopWeb.Web
             // Requires LocalDB which can be installed with SQL Server Express 2016
             // https://www.microsoft.com/en-us/download/details.aspx?id=54284
             services.AddDbContext<EgitimContext>(c =>
-                c.UseSqlServer(Configuration.GetConnectionString("CatalogConnection")));
+                c.UseSqlServer(Configuration.GetConnectionString("EgitimBackend")));
 
 //            // Add Identity DbContext
 //            services.AddDbContext<AppIdentityDbContext>(options =>
@@ -81,8 +82,6 @@ namespace Microsoft.eShopWeb.Web
             services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
 
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IBasketService, BasketService>();
-            services.AddScoped<IOrderService, OrderService>();
             services.Configure<CatalogSettings>(Configuration);
             services.AddSingleton<IUriComposer>(new UriComposer(Configuration.Get<CatalogSettings>()));
 
@@ -116,7 +115,7 @@ namespace Microsoft.eShopWeb.Web
             services.AddHttpContextAccessor();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "EgitimAPI", Version = "v1" });
             });
 
             services.AddHealthChecks()
@@ -203,7 +202,7 @@ namespace Microsoft.eShopWeb.Web
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Egitim API V1");
             });
 
             app.UseMvc(routes =>

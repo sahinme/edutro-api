@@ -24,27 +24,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="wwwroot\fonts\" />
-    <Folder Include="wwwroot\lib\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\ApplicationCore\ApplicationCore.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="compilerconfig.json" />
-    <None Include="wwwroot\images\products\1.png" />
-    <None Include="wwwroot\images\products\10.png" />
-    <None Include="wwwroot\images\products\11.png" />
-    <None Include="wwwroot\images\products\12.png" />
-    <None Include="wwwroot\images\products\2.png" />
-    <None Include="wwwroot\images\products\3.png" />
-    <None Include="wwwroot\images\products\4.png" />
-    <None Include="wwwroot\images\products\5.png" />
-    <None Include="wwwroot\images\products\6.png" />
-    <None Include="wwwroot\images\products\7.png" />
-    <None Include="wwwroot\images\products\8.png" />
-    <None Include="wwwroot\images\products\9.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="appsettings.json">
@@ -70,5 +51,30 @@
     <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
     <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ViewImports.cshtml" />
     <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ViewStart.cshtml" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\arrow-down.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\arrow-right.svg" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\brand.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\cart.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\logout.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\main_banner.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\main_banner_text.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\main_banner_text.svg" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\my_orders.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\1.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\10.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\11.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\12.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\2.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\3.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\4.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\5.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\6.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\7.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\8.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\products\9.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\refresh.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot" />
   </ItemGroup>
 </Project>

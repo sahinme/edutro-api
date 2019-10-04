@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
+using EgitimAPI.ApplicationCore.Services.UserService.Dto;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.eShopWeb.ApplicationCore.Entities.BasketAggregate;
-using Microsoft.eShopWeb.ApplicationCore.Entities.Users;
-using Microsoft.eShopWeb.ApplicationCore.Interfaces;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
+using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
-namespace Microsoft.eShopWeb.Web.Controllers.Api
+namespace Microsoft.EgitimAPI.Web.Controllers.Api
 {
     public class UserController:BaseApiController
     {
@@ -19,6 +19,13 @@ namespace Microsoft.eShopWeb.Web.Controllers.Api
         public async Task<User> List(int id)
         {
             return await _userService.GetUserById(id);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> CreateUser(CreateUserDto input)
+        {
+           var user = await _userService.CreateUser(input);
+           return Ok(user);
         }
     }
 }
