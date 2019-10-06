@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
@@ -28,6 +29,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             return Ok(tenant);
         }
         
+        [Authorize]
         [HttpGet]
         public  List<TenantDto> GetAll()
         {

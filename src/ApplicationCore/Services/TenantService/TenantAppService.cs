@@ -50,6 +50,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
             return tenatModel;
         }
 
+        
         public List<TenantDto> GetAll()
         {
             var model = _tenantRepository.GetAll().Where(x => x.IsDeleted == false).Select(x => new TenantDto

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using EgitimAPI.ApplicationCore.Services.UserService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
@@ -36,6 +37,13 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services
         public async Task<User> GetUserById(int id)
         {
             var user = await _asyncRepository.GetByIdAsync(id);
+            return user;
+        }
+
+        public User GetUserForLogin(LoginDto input)
+        {
+            var user = _asyncRepository.GetAll()
+                .FirstOrDefault(x => x.Username == input.Username && x.Password == input.Password);
             return user;
         }
     }
