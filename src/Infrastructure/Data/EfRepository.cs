@@ -1,11 +1,11 @@
-﻿using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.eShopWeb.ApplicationCore.Entities;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EgitimAPI.ApplicationCore.Entities;
+using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
-namespace Microsoft.eShopWeb.Infrastructure.Data
+namespace Microsoft.EgitimAPI.Infrastructure.Data
 {
     /// <summary>
     /// "There's some repetition here - couldn't we have some the sync methods call the async?"
@@ -21,7 +21,12 @@ namespace Microsoft.eShopWeb.Infrastructure.Data
             _dbContext = dbContext;
         }
         
-        public virtual async Task<T> GetByIdAsync(int id)
+        public IQueryable<T> GetAll()
+        {
+            return _dbContext.Set<T>();
+        }
+        
+        public virtual async Task<T> GetByIdAsync(long id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }

@@ -16,9 +16,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
+using AutoMapper;
 using Microsoft.EgitimAPI;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services;
+using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService;
 using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EgitimAPI.Infrastructure.Logging;
 using Microsoft.EgitimAPI.Infrastructure.Services;
@@ -82,12 +84,14 @@ namespace Microsoft.eShopWeb.Web
             services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITenantAppService, TenantAppService>();
             services.Configure<CatalogSettings>(Configuration);
             services.AddSingleton<IUriComposer>(new UriComposer(Configuration.Get<CatalogSettings>()));
 
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
             services.AddTransient<IEmailSender, EmailSender>();
 
+            services.AddAutoMapper(typeof(Startup));
             // Add memory cache services
             services.AddMemoryCache();
 

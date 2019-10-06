@@ -1,6 +1,8 @@
-﻿using Microsoft.eShopWeb.ApplicationCore.Interfaces;
+﻿
+using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
+using Microsoft.EgitimAPI;
 
-namespace Microsoft.eShopWeb.ApplicationCore.Services
+namespace Microsoft.EgitimAPI.ApplicationCore.Services
 {
     public class UriComposer : IUriComposer
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Microsoft.eShopWeb.ApplicationCore.Interfaces
+namespace Microsoft.EgitimAPI.ApplicationCore.Interfaces
 {
     public interface ISpecification<T>
     {

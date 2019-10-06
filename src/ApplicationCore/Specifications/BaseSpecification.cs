@@ -1,7 +1,7 @@
-﻿using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Specifications
 {

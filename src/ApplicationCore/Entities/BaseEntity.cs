@@ -1,17 +1,38 @@
 ﻿using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
-namespace Microsoft.eShopWeb.ApplicationCore.Entities
+namespace Microsoft.EgitimAPI.ApplicationCore.Entities
 {
     // This can easily be modified to be BaseEntity<T> and public T Id to support different key types.
     // Using non-generic integer types for simplicity and to ease caching logic
     public class BaseEntity
     {
-        public int Id { get; set; }
+        [Key]
+        public long Id { get; set; }
 
-        public DateTime CreatedDateTime { get; set; }
+        private DateTime? _createdDate = null;
+        
+        public DateTime ModifiedDate { get; set; }
+        
+        public string CreatorUserId { get; set; }
+        
+        public string ModifiedBy { get; set; }
 
-        public DateTime ModifiedDateTime { get; set; }
+        [DefaultValue(false)]
+        public bool IsDeleted { get; set; }    
+        
+        public DateTime CreatedDate
+        {
+            get
+            {
+                return _createdDate.HasValue
+                    ? _createdDate.Value
+                    : DateTime.Now;
+            }
 
-        public int CreatorUserId { get; set; }    
+            set { _createdDate = value; }
+        }
+        
     }
 }

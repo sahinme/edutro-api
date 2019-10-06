@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.eShopWeb.ApplicationCore.Entities;
-using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using System.Linq;
+using Microsoft.EgitimAPI.ApplicationCore.Entities;
+using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
-namespace Microsoft.eShopWeb.Infrastructure.Data
+namespace Microsoft.EgitimAPI.Infrastructure.Data
 {
     public class SpecificationEvaluator<T> where T : BaseEntity
     {

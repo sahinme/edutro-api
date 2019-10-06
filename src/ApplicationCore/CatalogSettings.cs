@@ -1,4 +1,4 @@
-﻿namespace Microsoft.eShopWeb
+﻿namespace Microsoft.EgitimAPI
 {
     public class CatalogSettings
     {

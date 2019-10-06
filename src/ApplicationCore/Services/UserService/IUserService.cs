@@ -1,11 +1,12 @@
 using System.Threading.Tasks;
-using Microsoft.eShopWeb.ApplicationCore.Entities.Users;
+using EgitimAPI.ApplicationCore.Services.UserService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
 
-namespace Microsoft.eShopWeb.ApplicationCore.Interfaces
+namespace Microsoft.EgitimAPI.ApplicationCore.Interfaces
 {
     public interface IUserService
     {
-        Task CreateUser();
+        Task<User> CreateUser(CreateUserDto input);
         Task<User> GetUserById(int id);
     }
 }

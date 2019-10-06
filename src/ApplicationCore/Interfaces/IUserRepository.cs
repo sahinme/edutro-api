@@ -1,6 +1,7 @@
-using Microsoft.eShopWeb.ApplicationCore.Entities.Users;
 
-namespace Microsoft.eShopWeb.ApplicationCore.Interfaces
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
+
+namespace Microsoft.EgitimAPI.ApplicationCore.Interfaces
 {
     public interface IUserRepository:IAsyncRepository<User>
     {

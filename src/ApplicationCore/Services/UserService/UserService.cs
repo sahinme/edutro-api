@@ -1,8 +1,10 @@
 using System.Threading.Tasks;
-using Microsoft.eShopWeb.ApplicationCore.Entities.Users;
-using Microsoft.eShopWeb.ApplicationCore.Interfaces;
+using EgitimAPI.ApplicationCore.Services.UserService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
+using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
-namespace Microsoft.eShopWeb.ApplicationCore.Services
+
+namespace Microsoft.EgitimAPI.ApplicationCore.Services
 {
     public class UserService:IUserService
     {
@@ -13,9 +15,22 @@ namespace Microsoft.eShopWeb.ApplicationCore.Services
             _asyncRepository = asyncRepository;
         }
         
-        public Task CreateUser()
+        public async Task<User> CreateUser(CreateUserDto input)
         {
-            throw new System.NotImplementedException();
+            var user = new User
+            {
+                Name = input.Name,
+                Surname = input.Surname,
+                EmailAddress = input.EmailAddress,
+                Password = input.Password,
+                Profession = input.Profession,
+                Gender = input.Gender,
+                Username = input.Username,
+                Age = input.Age,
+                PhoneNumber = input.PhoneNumber
+            };
+            await _asyncRepository.AddAsync(user);
+            return user;
         }
 
         public async Task<User> GetUserById(int id)

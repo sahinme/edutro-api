@@ -16,7 +16,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpGet]
-        public async Task<User> List(int id)
+        public async Task<User> GetById(int id)
         {
             return await _userService.GetUserById(id);
         }

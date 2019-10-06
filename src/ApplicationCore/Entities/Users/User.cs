@@ -1,6 +1,7 @@
-using Microsoft.eShopWeb.ApplicationCore.Interfaces;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
-namespace Microsoft.eShopWeb.ApplicationCore.Entities.Users
+namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Users
 {
     public class User:BaseEntity,IAggregateRoot
     {
@@ -19,6 +20,7 @@ namespace Microsoft.eShopWeb.ApplicationCore.Entities.Users
 
         public string Password { get; set; }
 
+        [EmailAddress]
         public string EmailAddress { get; set; }
 
         public string PhoneNumber { get; set; }
