@@ -14,5 +14,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto
         public string Resume { get; set; }
 
         public long? TenantId { get; set; }
+
+        public string TenantName { get; set; }
     }
 }
