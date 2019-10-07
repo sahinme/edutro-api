@@ -22,6 +22,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EgitimAPI;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services;
+using Microsoft.EgitimAPI.ApplicationCore.Services.Category;
+using Microsoft.EgitimAPI.ApplicationCore.Services.CategoryService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService;
 using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EgitimAPI.Infrastructure.Logging;
@@ -91,6 +96,10 @@ namespace Microsoft.eShopWeb.Web
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITenantAppService, TenantAppService>();
+            services.AddScoped<ICourseAppService, CourseAppService>();
+            services.AddScoped<IGivenCourseAppService, GivenCourseAppService>();
+            services.AddScoped<IEducatorAppService, EducatorAppService>();
+            services.AddScoped<ICategoryAppService, CategoryAppService>();
             services.Configure<CatalogSettings>(Configuration);
             services.AddSingleton<IUriComposer>(new UriComposer(Configuration.Get<CatalogSettings>()));
 

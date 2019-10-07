@@ -12,14 +12,14 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
         
         public double Price { get; set; }
         
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
         
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         
         public long CategoryId { get; set; }
 
-        public long EducatorId { get; set; }
+        public long? EducatorId { get; set; }
 
-        public long TenantId { get; set; }
+        public long? TenantId { get; set; }
     }
 }

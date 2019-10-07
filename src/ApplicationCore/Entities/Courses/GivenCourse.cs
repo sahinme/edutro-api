@@ -9,7 +9,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Courses
     {
         public long CourseId { get; set; }
         
-        public long EducatorId { get; set; }
+        public long? EducatorId { get; set; }
 
         public long? TenantId { get; set; }
         
