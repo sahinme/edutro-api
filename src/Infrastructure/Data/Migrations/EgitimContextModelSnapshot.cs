@@ -360,7 +360,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator.TenantEducator", b =>
                 {
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Educators.Educator", "Educator")
-                        .WithMany("TenantEducators")
+                        .WithMany("EducatorTenants")
                         .HasForeignKey("EducatorId")
                         .OnDelete(DeleteBehavior.Cascade);
 

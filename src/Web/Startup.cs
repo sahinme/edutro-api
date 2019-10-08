@@ -74,7 +74,7 @@ namespace Microsoft.eShopWeb.Web
             // Requires LocalDB which can be installed with SQL Server Express 2016
             // https://www.microsoft.com/en-us/download/details.aspx?id=54284
             services.AddDbContext<EgitimContext>(c =>
-                c.UseSqlServer(Configuration.GetConnectionString("EgitimBackend")));
+                c.UseSqlServer(Configuration.GetConnectionString("EgitimBackend")),ServiceLifetime.Transient);
 
 //            // Add Identity DbContext
 //            services.AddDbContext<AppIdentityDbContext>(options =>

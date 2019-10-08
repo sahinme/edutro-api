@@ -17,10 +17,19 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpPost]
-        public IActionResult CreateCourse(CreateCourseDto input)
+        public async Task<IActionResult> CreateCourse(CreateCourseDto input)
         {
-            var tenant = _courseAppService.CreateCourse(input);
-            return Ok(tenant);
+            try
+            {
+                 await _courseAppService.CreateCourse(input);
+                return Ok("created Course");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
         
         [HttpGet]

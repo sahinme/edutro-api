@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
-    public partial class all_entities : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,6 +54,28 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Educators",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ModifiedDate = table.Column<DateTime>(nullable: false),
+                    CreatorUserId = table.Column<string>(nullable: true),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Surname = table.Column<string>(nullable: true),
+                    Profession = table.Column<string>(nullable: true),
+                    Resume = table.Column<string>(nullable: true),
+                    ProfileImagePath = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Educators", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tenants",
                 columns: table => new
                 {
@@ -78,6 +100,32 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ModifiedDate = table.Column<DateTime>(nullable: false),
+                    CreatorUserId = table.Column<string>(nullable: true),
+                    ModifiedBy = table.Column<string>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Surname = table.Column<string>(nullable: true),
+                    Gender = table.Column<string>(nullable: false),
+                    Age = table.Column<int>(nullable: false),
+                    Profession = table.Column<string>(nullable: true),
+                    Username = table.Column<string>(nullable: true),
+                    Password = table.Column<string>(nullable: true),
+                    EmailAddress = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Courses",
                 columns: table => new
                 {
@@ -92,11 +140,10 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     Description = table.Column<string>(nullable: true),
                     Quota = table.Column<int>(nullable: false),
                     Price = table.Column<double>(nullable: false),
-                    StartDate = table.Column<DateTime>(nullable: false),
-                    EndDate = table.Column<DateTime>(nullable: false),
-                    TenantId = table.Column<long>(nullable: false),
+                    StartDate = table.Column<DateTime>(nullable: true),
+                    EndDate = table.Column<DateTime>(nullable: true),
                     CategoryId = table.Column<long>(nullable: false),
-                    CourseContentId = table.Column<long>(nullable: false)
+                    CourseContentId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -112,42 +159,38 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                         column: x => x.CourseContentId,
                         principalTable: "CourseContents",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Courses_Tenants_TenantId",
-                        column: x => x.TenantId,
-                        principalTable: "Tenants",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Educators",
+                name: "TenantEducator",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    TenantId = table.Column<long>(nullable: false),
+                    EducatorId = table.Column<long>(nullable: false),
+                    Id = table.Column<long>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
                     CreatorUserId = table.Column<string>(nullable: true),
                     ModifiedBy = table.Column<string>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Surname = table.Column<string>(nullable: true),
-                    Profession = table.Column<string>(nullable: true),
-                    Resume = table.Column<string>(nullable: true),
-                    ProfileImagePath = table.Column<string>(nullable: true),
-                    TenantId = table.Column<long>(nullable: true)
+                    CreatedDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Educators", x => x.Id);
+                    table.PrimaryKey("PK_TenantEducator", x => new { x.TenantId, x.EducatorId });
+                    table.UniqueConstraint("AK_TenantEducator_Id", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Educators_Tenants_TenantId",
+                        name: "FK_TenantEducator_Educators_EducatorId",
+                        column: x => x.EducatorId,
+                        principalTable: "Educators",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TenantEducator_Tenants_TenantId",
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -185,20 +228,20 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 name: "GivenCourses",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CourseId = table.Column<long>(nullable: false),
+                    TenantId = table.Column<long>(nullable: false),
+                    Id = table.Column<long>(nullable: false),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
                     CreatorUserId = table.Column<string>(nullable: true),
                     ModifiedBy = table.Column<string>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: false),
-                    CourseId = table.Column<long>(nullable: false),
-                    EducatorId = table.Column<long>(nullable: false),
-                    TenantId = table.Column<long>(nullable: true)
+                    EducatorId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GivenCourses", x => x.Id);
+                    table.PrimaryKey("PK_GivenCourses", x => new { x.TenantId, x.CourseId });
+                    table.UniqueConstraint("AK_GivenCourses_Id", x => x.Id);
                     table.ForeignKey(
                         name: "FK_GivenCourses_Courses_CourseId",
                         column: x => x.CourseId,
@@ -210,13 +253,13 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                         column: x => x.EducatorId,
                         principalTable: "Educators",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_GivenCourses_Tenants_TenantId",
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -233,16 +276,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 name: "IX_Courses_CourseContentId",
                 table: "Courses",
                 column: "CourseContentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Courses_TenantId",
-                table: "Courses",
-                column: "TenantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Educators_TenantId",
-                table: "Educators",
-                column: "TenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FavoriteCourses_CourseId",
@@ -265,9 +298,9 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 column: "EducatorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GivenCourses_TenantId",
-                table: "GivenCourses",
-                column: "TenantId");
+                name: "IX_TenantEducator_EducatorId",
+                table: "TenantEducator",
+                column: "EducatorId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -279,19 +312,25 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 name: "GivenCourses");
 
             migrationBuilder.DropTable(
+                name: "TenantEducator");
+
+            migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
                 name: "Courses");
 
             migrationBuilder.DropTable(
                 name: "Educators");
 
             migrationBuilder.DropTable(
+                name: "Tenants");
+
+            migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "CourseContents");
-
-            migrationBuilder.DropTable(
-                name: "Tenants");
         }
     }
 }

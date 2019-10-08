@@ -29,7 +29,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService
                 .Where(x=>x.Course.IsDeleted==false)
                 .Select(x => new GivenCourseDto
                 {
-                    Id   = x.Id,
                     Course = new CourseDto
                     {
                         Id = x.Course.Id,

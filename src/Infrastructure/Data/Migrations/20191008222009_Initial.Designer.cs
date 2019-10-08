@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EgitimContext))]
-    [Migration("20191008214642_Course_tenant_educator_many-to-many")]
-    partial class Course_tenant_educator_manytomany
+    [Migration("20191008222009_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -362,7 +362,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator.TenantEducator", b =>
                 {
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Educators.Educator", "Educator")
-                        .WithMany("TenantEducators")
+                        .WithMany("EducatorTenants")
                         .HasForeignKey("EducatorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
