@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,20 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         public async Task<List<CourseDto>> GetCoursesByName(string courseName)
         {
             return await _courseAppService.GetCoursesByName(courseName);
+        }
+        
+        [HttpDelete]
+        public async Task DeleteCourse(long courseId)
+        {
+            try
+            {
+                await _courseAppService.DeleteCourse(courseId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         Task CreateCourse(CreateCourseDto input);
         Task<List<CourseDto>> GetCoursesByName(string courseName);
         Task<List<CourseDto>> GetCoursesByCategory(long categoryId);
-        
+        Task DeleteCourse(long id);
+
     }
 }

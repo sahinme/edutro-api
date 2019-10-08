@@ -20,5 +20,12 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         {
             return await _givenCourseAppService.GetAllGivenCourses();
         }
+        
+        [HttpPost]
+        public IActionResult CreateGivenCourse(CreateGivenCourseDto input)
+        {
+            var course = _givenCourseAppService.CreateGivenCourse(input);
+            return Ok(course);
+        }
     }
 }

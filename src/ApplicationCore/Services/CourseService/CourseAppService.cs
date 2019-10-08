@@ -6,6 +6,8 @@ using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
@@ -13,10 +15,14 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
     public class CourseAppService:ICourseAppService
     {
         private readonly IAsyncRepository<Course> _courseRepository;
+        private readonly IGivenCourseAppService _givenCourseAppService;
 
-        public CourseAppService(IAsyncRepository<Course> courseRepository)
+        public CourseAppService(IAsyncRepository<Course> courseRepository,
+                IGivenCourseAppService givenCourseAppService
+            )
         {
             _courseRepository = courseRepository;
+            _givenCourseAppService = givenCourseAppService;
         }
         public async Task CreateCourse(CreateCourseDto input)
         {
@@ -29,9 +35,15 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 StartDate = input.StartDate,
                 EndDate = input.EndDate,
                 CategoryId = input.CategoryId,
-                TenantId = input.TenantId
             };
             await _courseRepository.AddAsync(course);
+            var givenCourse = new CreateGivenCourseDto
+            {
+                CourseId = course.Id,
+                TenantId = input.TenantId,
+                EducatorId = input.EducatorId
+            };
+            await _givenCourseAppService.CreateGivenCourse(givenCourse);
         }
 
         public async Task<List<CourseDto>> GetCoursesByName(string courseName)
@@ -86,6 +98,13 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     }
                 }).ToListAsync();
             return courses;
+        }
+
+        public async Task DeleteCourse(long id)
+        {
+            var course = await _courseRepository.GetByIdAsync(id);
+            course.IsDeleted = true;
+            await _courseRepository.UpdateAsync(course);
         }
     }
 }

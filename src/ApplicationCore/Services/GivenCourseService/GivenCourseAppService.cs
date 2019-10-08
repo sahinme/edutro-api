@@ -25,6 +25,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService
             var givenCourses = await _givenCourseRepository.GetAll().Include(x => x.Course).ThenInclude(x=>x.Category)
                 //.ThenInclude(x=>x.ParentCategory)
                 .Include(x => x.Tenant)
+                .Include(x=>x.Educator)
+                .Where(x=>x.Course.IsDeleted==false)
                 .Select(x => new GivenCourseDto
                 {
                     Id   = x.Id,
@@ -52,9 +54,22 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService
                     },
                     TenantName = x.Tenant.TenantName,
                     LogoPath = x.Tenant.LogoPath,
-                    TenantId = x.Tenant.Id
+                    TenantId = x.Tenant.Id,
+                    EducatorId = x.Educator.Id,
+                    EducatorFullName = x.Educator.Name+" "+x.Educator.Surname
                 }).ToListAsync();
             return givenCourses;
+        }
+
+        public async Task CreateGivenCourse(CreateGivenCourseDto input)
+        {
+            var givenCourse = new GivenCourse
+            {
+                CourseId = input.CourseId,
+                TenantId = input.TenantId,
+                EducatorId = input.EducatorId
+            };
+            await _givenCourseRepository.AddAsync(givenCourse);
         }
     }
 }
