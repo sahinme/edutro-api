@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
@@ -105,6 +105,31 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
             var course = await _courseRepository.GetByIdAsync(id);
             course.IsDeleted = true;
             await _courseRepository.UpdateAsync(course);
+        }
+
+        public async Task UpdateCourse(UpdateCourseDto input)
+        {
+            var isExistCourse = await _courseRepository.GetAll().AnyAsync(x => x.Id == input.Id);
+                if (!isExistCourse)
+                    throw new Exception("Dont exist this course!");
+
+            var course = await _courseRepository.GetAll().FirstAsync(x => x.Id == input.Id);
+
+            course.Id = input.Id;    
+            course.Description = input.Description;
+            course.Title = input.Title;
+            course.Price = input.Price;
+            course.Quota = input.Quota;
+            course.StartDate = input.StartDate;
+            course.EndDate = input.EndDate;
+
+            await _courseRepository.UpdateAsync(course);
+
+                ///// given course update edilecek.
+//            if (input.EducatorId!=null)
+//            {
+//                var givenCourse = await _givenCourseAppService.ge
+//            }
         }
     }
 }

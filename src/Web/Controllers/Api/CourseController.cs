@@ -42,5 +42,19 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                 throw;
             }
         }
+        
+        [HttpPut]
+        public async Task UpdateCourse(UpdateCourseDto input)
+        {
+            try
+            {
+                await _courseAppService.UpdateCourse(input);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 }

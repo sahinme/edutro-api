@@ -29,10 +29,20 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
         public DbSet<GivenCourse> GivenCourses { get; set; }
 
         public DbSet<CourseContent> CourseContents { get; set; }
-
-//        protected override void OnModelCreating(ModelBuilder builder)
-//        {
-//        }
+        
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<TenantEducator>()
+                .HasKey(bc => new { bc.BookId, bc.CategoryId });  
+            modelBuilder.Entity<BookCategory>()
+                .HasOne(bc => bc.Book)
+                .WithMany(b => b.BookCategories)
+                .HasForeignKey(bc => bc.BookId);  
+            modelBuilder.Entity<BookCategory>()
+                .HasOne(bc => bc.Category)
+                .WithMany(c => c.BookCategories)
+                .HasForeignKey(bc => bc.CategoryId);
+        }
         
     }
 }
