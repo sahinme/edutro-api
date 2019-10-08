@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
@@ -18,6 +19,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Educators
 
         public string ProfileImagePath { get; set; }
         
-        public ICollection<Tenant> Tenants { get; set; }
+        public IList<TenantEducator.TenantEducator> EducatorTenants { get; set; }
+        
+        public ICollection<GivenCourse> GivenCourses { get; set; }
+        //public IList<GivenCourse> GivenCourses { get; set; }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto;
 using Microsoft.EntityFrameworkCore;
@@ -25,14 +26,15 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                 Surname = input.Surname,
                 Profession = input.Profession,
                 Resume = input.Resume,
-                TenantId = input.TenantId
+                //TenantId = input.TenantId
             };
             await _educatorRepository.AddAsync(educator);
         }
 
         public async Task<List<EducatorDto>> GetAllEducators()
         {
-            var educators = await _educatorRepository.GetAll().Include(x => x.Tenant)
+            var educators = await _educatorRepository.GetAll().Include(x=>x.EducatorTenants)
+                .ThenInclude(x=>x.Tenant)
                 .Select(x => new EducatorDto
                 {
                     Id = x.Id,
@@ -40,8 +42,11 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                     Surname = x.Surname,
                     Profession = x.Profession,
                     Resume = x.Resume,
-                    TenantName = x.Tenant.TenantName,
-                    TenantId = x.Tenant.Id
+                    EducatorTenants = x.EducatorTenants.Select(tenant => new EducatorTenantDto
+                    {
+                        TenantId = tenant.Tenant.Id,
+                        TenantName = tenant.Tenant.TenantName
+                    }).ToList()
                 }).ToListAsync();
             return educators;
         }

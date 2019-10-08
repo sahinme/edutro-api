@@ -29,6 +29,12 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             return await _courseAppService.GetCoursesByName(courseName);
         }
         
+        [HttpGet]
+        public async Task<List<CourseDto>> GetAllCourses()
+        {
+            return await _courseAppService.GetAllCourses();
+        }
+        
         [HttpDelete]
         public async Task DeleteCourse(long courseId)
         {

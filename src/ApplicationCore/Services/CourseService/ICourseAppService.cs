@@ -13,6 +13,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         Task<List<CourseDto>> GetCoursesByCategory(long categoryId);
         Task DeleteCourse(long id);
         Task UpdateCourse(UpdateCourseDto course);
+        Task<List<CourseDto>> GetAllCourses();
 
     }
 }

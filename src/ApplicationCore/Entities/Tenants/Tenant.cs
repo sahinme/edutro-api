@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
@@ -18,8 +19,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants
 
         public string PhoneNumber2 { get; set; }
 
-        public string LogoPath { get; set; }    
+        public string LogoPath { get; set; }
+        public IList<TenantEducator.TenantEducator> TenantEducators { get; set; }
         
-        public ICollection<Educator> Educators { get; set; }
+        public IList<GivenCourse> GivenCourses { get; set; }
     }
 }

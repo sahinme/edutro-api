@@ -6,10 +6,10 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator
 {
     public class TenantEducator:BaseEntity,IAggregateRoot
     {
-        public long StudentId { get; set; }
+        public long TenantId { get; set; }
         public Tenant Tenant { get; set; }
 
-        public long CourseId { get; set; }
+        public long EducatorId { get; set; }
         public Educator Educator { get; set; }
     }
 }

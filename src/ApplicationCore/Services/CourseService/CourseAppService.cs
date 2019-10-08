@@ -8,6 +8,7 @@ using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
@@ -130,6 +131,38 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
 //            {
 //                var givenCourse = await _givenCourseAppService.ge
 //            }
+        }
+
+        public async Task<List<CourseDto>> GetAllCourses()
+        {
+            var course = await _courseRepository.GetAll().Include(x=>x.Category)
+                .Include(x=>x.Tenants).ThenInclude(x=>x.Tenant)
+                .Select(x => new CourseDto
+                {
+                    Title = x.Title,
+                    Description = x.Description,
+                    Quota = x.Quota,
+                    Price = x.Price,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    Category = new CategoryDto
+                    {
+                        Id = x.Category.Id,
+                        Description = x.Category.Description,
+                        DisplayName = x.Category.DisplayName,
+                        ParentCategory = new ParentCategoryDto()
+                    },
+                    Tenants = x.Tenants.Select(t=>new TenantDto
+                    {
+                        Id = t.Tenant.Id,
+                        TenantName = t.Tenant.TenantName,
+                        Address = t.Tenant.Address,
+                        PhoneNumber = t.Tenant.PhoneNumber,
+                        LogoPath = t.Tenant.LogoPath,
+                        IsPremium = t.Tenant.IsPremium
+                    }).ToList()
+                }).ToListAsync();
+            return course;
         }
     }
 }

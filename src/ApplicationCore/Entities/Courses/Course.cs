@@ -16,25 +16,17 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Courses
         public double Price { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public long? TenantId { get; set; }
         public long CategoryId { get; set; }
         public long? CourseContentId { get; set; }
 
-        [ForeignKey(nameof(TenantId))]
-        public virtual Tenant Tenant { get; set; }
-        
         [ForeignKey(nameof(CategoryId))]
         public virtual Category Category { get; set; }        
         
         [ForeignKey(nameof(CourseContentId))]
         public virtual CourseContent CourseContent { get; set; }
         
+        public IList<GivenCourse> Tenants { get; set; }
         
-        private ICollection<GivenCourse> _givingCourses;
-        public virtual ICollection<GivenCourse> GivingCourses
-        {
-            get { return _givingCourses ?? (_givingCourses = new Collection<GivenCourse>()); }
-            protected set { _givingCourses = value; }
-        }
+        //public IList<GivenCourse> Educators { get; set; }
     }
 }

@@ -53,7 +53,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
         
         public List<TenantDto> GetAll()
         {
-            var model = _tenantRepository.GetAll().Where(x => x.IsDeleted == false).Select(x => new TenantDto
+            var model = _tenantRepository.GetAll().Include(x=>x.TenantEducators).ThenInclude(x=>x.Educator)
+                .Where(x => x.IsDeleted == false).Select(x => new TenantDto
             {
                 Id = x.Id,
                 TenantName = x.TenantName,
@@ -61,7 +62,13 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                 PhoneNumber2 = x.PhoneNumber2,
                 LogoPath = x.LogoPath,
                 IsPremium = x.IsPremium,
-                Address = x.Address
+                Address = x.Address,
+                TenantEducators = x.TenantEducators.Select(educator => new TenantEducatorDto
+                {
+                    EducatorId = educator.Educator.Id,
+                    EducatorName = educator.Educator.Name+" "+educator.Educator.Surname,
+                    Profession = educator.Educator.Profession
+                }).ToList()
             }).ToList();
             
             return model;
