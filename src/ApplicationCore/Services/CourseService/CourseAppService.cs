@@ -137,6 +137,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         {
             var courses = await _courseRepository.GetAll().Where(x => x.IsDeleted == false)
                 .Include(x => x.Tenants).ThenInclude(x => x.Tenant)
+                .Include(x=>x.Educators).ThenInclude(x=>x.Educator)
                 .Include(x => x.Category)
                 .Select(x => new CourseDto
                 {
@@ -145,8 +146,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     Description = x.Description,
                     Quota = x.Quota,
                     Price = x.Price,
-                    StartDate = x.StartDate.GetValueOrDefault(),
-                    EndDate = x.EndDate.GetValueOrDefault(),
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
                     Category = new CategoryDto
                     {
                         Id = x.Category.Id,
@@ -159,6 +160,13 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                         TenantId = t.Tenant.Id,
                         TenantName = t.Tenant.TenantName,
                         LogoPath = t.Tenant.LogoPath
+                    }).ToList(),
+                    Educators = x.Educators.Select(e=>new CourseEducatorDto
+                    {
+                        EducatorId = e.Educator.Id,
+                        EducatorName=e.Educator.Name,
+                        Profession = e.Educator.Profession,
+                        ProfileImgPath = e.Educator.ProfileImagePath
                     }).ToList()
                 }).ToListAsync();
             return courses;

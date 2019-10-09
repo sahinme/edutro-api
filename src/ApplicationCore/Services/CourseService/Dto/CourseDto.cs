@@ -30,7 +30,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
 
     public class CourseTenantDto
     {
-        public long TenantId { get; set; }
+        public long? TenantId { get; set; }
 
         public string TenantName { get; set; }
 
@@ -39,7 +39,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
 
     public class CourseEducatorDto
     {
-        public long EducatorId { get; set; }
+        public long? EducatorId { get; set; }
 
         public string EducatorName { get; set; }
 
