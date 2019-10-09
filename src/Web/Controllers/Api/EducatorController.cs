@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -16,16 +17,40 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpPost]
-        public IActionResult CreateEducator(CreateEducatorDto input)
+        public async Task<IActionResult> CreateEducator(CreateEducatorDto input)
         {
-            var educator = _educatorAppService.CreateEducator(input);
-            return Ok(educator);
+            try
+            {
+                await _educatorAppService.CreateEducator(input);
+                return Ok("Created educator");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
         
         [HttpGet]
         public async Task<List<EducatorDto>> GetAllEducator()
         {
             return await _educatorAppService.GetAllEducators();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteEducator(long id)
+        {
+            try
+            {
+                await _educatorAppService.Delete(id);
+                return Ok("Deleted educator");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

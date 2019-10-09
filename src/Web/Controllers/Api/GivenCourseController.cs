@@ -22,10 +22,10 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpPost]
-        public IActionResult CreateGivenCourse(CreateGivenCourseDto input)
+        public async Task<IActionResult> CreateGivenCourse(CreateGivenCourseDto input)
         {
-            var course = _givenCourseAppService.CreateGivenCourse(input);
-            return Ok(course);
+            await _givenCourseAppService.CreateGivenCourse(input);
+            return Ok("Created given course");
         }
     }
 }

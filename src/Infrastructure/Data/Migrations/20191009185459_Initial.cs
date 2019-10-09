@@ -166,19 +166,19 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 name: "TenantEducator",
                 columns: table => new
                 {
-                    TenantId = table.Column<long>(nullable: false),
-                    EducatorId = table.Column<long>(nullable: false),
-                    Id = table.Column<long>(nullable: false),
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
                     CreatorUserId = table.Column<string>(nullable: true),
                     ModifiedBy = table.Column<string>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
-                    CreatedDate = table.Column<DateTime>(nullable: false)
+                    CreatedDate = table.Column<DateTime>(nullable: false),
+                    TenantId = table.Column<long>(nullable: false),
+                    EducatorId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TenantEducator", x => new { x.TenantId, x.EducatorId });
-                    table.UniqueConstraint("AK_TenantEducator_Id", x => x.Id);
+                    table.PrimaryKey("PK_TenantEducator", x => x.Id);
                     table.ForeignKey(
                         name: "FK_TenantEducator_Educators_EducatorId",
                         column: x => x.EducatorId,
@@ -228,20 +228,20 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 name: "GivenCourses",
                 columns: table => new
                 {
-                    CourseId = table.Column<long>(nullable: false),
-                    TenantId = table.Column<long>(nullable: false),
-                    Id = table.Column<long>(nullable: false),
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
                     CreatorUserId = table.Column<string>(nullable: true),
                     ModifiedBy = table.Column<string>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: false),
-                    EducatorId = table.Column<long>(nullable: true)
+                    CourseId = table.Column<long>(nullable: false),
+                    EducatorId = table.Column<long>(nullable: true),
+                    TenantId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GivenCourses", x => new { x.TenantId, x.CourseId });
-                    table.UniqueConstraint("AK_GivenCourses_Id", x => x.Id);
+                    table.PrimaryKey("PK_GivenCourses", x => x.Id);
                     table.ForeignKey(
                         name: "FK_GivenCourses_Courses_CourseId",
                         column: x => x.CourseId,
@@ -259,7 +259,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -298,9 +298,19 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 column: "EducatorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GivenCourses_TenantId",
+                table: "GivenCourses",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TenantEducator_EducatorId",
                 table: "TenantEducator",
                 column: "EducatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TenantEducator_TenantId",
+                table: "TenantEducator",
+                column: "TenantId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

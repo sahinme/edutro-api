@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -23,10 +24,18 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpPost]
-        public IActionResult CreateTenant(CreateTenantDto input)
+        public async Task<IActionResult> CreateTenant(CreateTenantDto input)
         {
-            var tenant = _tenantAppService.CreateTenant(input);
-            return Ok(tenant);
+            try
+            {
+                await _tenantAppService.CreateTenant(input);
+                return Ok("Created Tenant");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
         
         [Authorize]
@@ -34,6 +43,22 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         public  List<TenantDto> GetAll()
         {
             return  _tenantAppService.GetAll();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteTenant(long id)
+        {
+            try
+            {
+                await _tenantAppService.Delete(id);
+                return Ok("Deleted tenant");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
     }
 }

@@ -9,5 +9,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
         Task CreateEducator(CreateEducatorDto input);
 
         Task<List<EducatorDto>> GetAllEducators();
+        Task Delete(long id);
     }
 }

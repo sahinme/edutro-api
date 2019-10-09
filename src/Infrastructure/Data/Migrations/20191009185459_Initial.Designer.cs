@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EgitimContext))]
-    [Migration("20191008222009_Initial")]
+    [Migration("20191009185459_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -147,7 +147,9 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.GivenCourse", b =>
                 {
-                    b.Property<long?>("TenantId");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("CourseId");
 
@@ -157,21 +159,21 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<long?>("EducatorId");
 
-                    b.Property<long>("Id");
-
                     b.Property<bool>("IsDeleted");
 
                     b.Property<string>("ModifiedBy");
 
                     b.Property<DateTime>("ModifiedDate");
 
-                    b.HasKey("TenantId", "CourseId");
+                    b.Property<long?>("TenantId");
 
-                    b.HasAlternateKey("Id");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
                     b.HasIndex("EducatorId");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("GivenCourses");
                 });
@@ -209,15 +211,15 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator.TenantEducator", b =>
                 {
-                    b.Property<long>("TenantId");
-
-                    b.Property<long>("EducatorId");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("CreatorUserId");
 
-                    b.Property<long>("Id");
+                    b.Property<long>("EducatorId");
 
                     b.Property<bool>("IsDeleted");
 
@@ -225,11 +227,13 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("ModifiedDate");
 
-                    b.HasKey("TenantId", "EducatorId");
+                    b.Property<long>("TenantId");
 
-                    b.HasAlternateKey("Id");
+                    b.HasKey("Id");
 
                     b.HasIndex("EducatorId");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("TenantEducator");
                 });
@@ -355,8 +359,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants.Tenant", "Tenant")
                         .WithMany("GivenCourses")
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("TenantId");
                 });
 
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator.TenantEducator", b =>

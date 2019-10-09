@@ -27,6 +27,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Courses
         
         public IList<GivenCourse> Tenants { get; set; }
         
+       // public IList<GivenCourse> Educators { get; set; }
+        
         //public IList<GivenCourse> Educators { get; set; }
     }
 }

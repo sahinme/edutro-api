@@ -11,5 +11,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
         Task<TenantDto> GetTenantById(long id);
 
         List<TenantDto> GetAll();
+        Task Delete(long id);
     }
 }

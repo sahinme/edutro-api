@@ -35,7 +35,7 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<TenantEducator>().HasKey(te => new { te.TenantId, te.EducatorId });
+            //builder.Entity<TenantEducator>().HasKey(te => new { te.TenantId, te.EducatorId });
 
             builder.Entity<TenantEducator>()
                 .HasOne<Tenant>(sc => sc.Tenant)
@@ -48,7 +48,7 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
                 .WithMany(s => s.EducatorTenants)
                 .HasForeignKey(sc => sc.EducatorId);
             
-            builder.Entity<GivenCourse>().HasKey(te => new { te.TenantId, te.CourseId });
+            //builder.Entity<GivenCourse>().HasKey(te => new { te.TenantId, te.CourseId });
 
             builder.Entity<GivenCourse>()
                 .HasOne<Tenant>(sc => sc.Tenant)

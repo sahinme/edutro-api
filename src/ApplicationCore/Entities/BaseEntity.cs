@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Entities
 {
@@ -9,6 +10,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities
     public class BaseEntity
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
         private DateTime? _createdDate = null;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto
 {
@@ -14,8 +15,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto
 
         //Kisa ozgecmis bilgileri
         public string Resume { get; set; }
-
         public List<EducatorTenantDto> EducatorTenants { get; set; }
+
+        public List<CourseDto> Courses { get; set; }
     }
 
     public class EducatorTenantDto

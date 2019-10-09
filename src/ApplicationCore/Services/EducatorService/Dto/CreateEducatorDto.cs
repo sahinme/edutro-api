@@ -11,6 +11,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto
         //Kisa ozgecmis bilgileri
         public string Resume { get; set; }
 
-        public long? TenantId { get; set; }
+        public long TenantId { get; set; }
     }
 }

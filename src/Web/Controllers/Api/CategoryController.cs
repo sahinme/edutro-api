@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
@@ -14,10 +16,19 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpPost]
-        public IActionResult CreateCategory(CreateCategoryDto input)
+        public async Task<IActionResult> CreateCategory(CreateCategoryDto input)
         {
-            var category = _categoryAppService.CreateCategory(input);
-            return Ok(category);
+            try
+            { 
+                await _categoryAppService.CreateCategory(input);
+                return Ok("Created category");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+          
         }
     }
 }
