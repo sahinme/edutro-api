@@ -58,7 +58,8 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
 
             builder.Entity<GivenCourse>()
                 .HasOne<Course>(sc => sc.Course)
-                .WithMany(s => s.Tenants);
+                .WithMany(s => s.Tenants)
+                .HasForeignKey(sc => sc.CourseId);
             
             
            builder.Entity<GivenCourse>().HasKey(te => new { te.EducatorId, te.CourseId });
