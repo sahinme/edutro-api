@@ -48,7 +48,7 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
                 .WithMany(s => s.EducatorTenants)
                 .HasForeignKey(sc => sc.EducatorId);
             
-            //builder.Entity<GivenCourse>().HasKey(te => new { te.TenantId, te.CourseId });
+            builder.Entity<GivenCourse>().HasKey(te => new { te.TenantId, te.CourseId });
 
             builder.Entity<GivenCourse>()
                 .HasOne<Tenant>(sc => sc.Tenant)
@@ -58,22 +58,20 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
 
             builder.Entity<GivenCourse>()
                 .HasOne<Course>(sc => sc.Course)
-                .WithMany(s => s.Tenants)
-                .HasForeignKey(sc => sc.CourseId);
+                .WithMany(s => s.Tenants);
             
             
-//            builder.Entity<GivenCourse>().HasKey(te => new { te.EducatorId, te.CourseId });
-//
-//            builder.Entity<GivenCourse>()
-//                .HasOne<Educator>(sc => sc.Educator)
-//                .WithMany(s => s.GivenCourses)
-//                .HasForeignKey(sc => sc.EducatorId);
-//
-//
-//            builder.Entity<GivenCourse>()
-//                .HasOne<Course>(sc => sc.Course)
-//                .WithMany(s => s.Educators)
-//                .HasForeignKey(sc => sc.CourseId);
+           builder.Entity<GivenCourse>().HasKey(te => new { te.EducatorId, te.CourseId });
+
+           builder.Entity<GivenCourse>()
+                .HasOne(f => f.Educator)
+                .WithMany()
+                .HasForeignKey(f => f.EducatorId);
+
+            builder.Entity<GivenCourse>()
+                .HasOne(f => f.Course)
+                .WithMany()
+                .HasForeignKey(f => f.CourseId);
         }
         
     }
