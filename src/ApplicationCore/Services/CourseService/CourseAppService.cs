@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
+using Microsoft.EgitimAPI.Lib;
 using Microsoft.EntityFrameworkCore;
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
@@ -16,17 +19,37 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
     public class CourseAppService:ICourseAppService
     {
         private readonly IAsyncRepository<Course> _courseRepository;
-        private readonly IGivenCourseAppService _givenCourseAppService;
+        private readonly IAsyncRepository<GivenCourse> _givenCourseRepository;
+        private readonly ICheckEdition _checkEdition;
 
         public CourseAppService(IAsyncRepository<Course> courseRepository,
-                IGivenCourseAppService givenCourseAppService
+            IAsyncRepository<GivenCourse> givenCourseRepository,
+                ICheckEdition checkEdition
             )
         {
             _courseRepository = courseRepository;
-            _givenCourseAppService = givenCourseAppService;
+            _givenCourseRepository =givenCourseRepository;
+            _checkEdition = checkEdition;
         }
         public async Task CreateCourse(CreateCourseDto input)
         {
+            if (input.EducatorId.Length>0)
+            {
+                var isHaveRightEducator = await _checkEdition.HaveCreateCourseRight<Educator>(input.EducatorId);
+                if (!isHaveRightEducator)
+                {
+                    throw new Exception("No right to create course for educator !");
+                }
+            }
+
+            if (input.TenantId.Length>0)
+            {
+                var isHaveRight = await _checkEdition.HaveCreateCourseRight<Tenant>(input.TenantId);
+                if (!isHaveRight)
+                {
+                    throw new Exception("No right to create course tenant !");
+                }
+            }
             var course = new Course
             {
                 Title = input.Title,
@@ -38,13 +61,21 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 CategoryId = input.CategoryId,
             };
             await _courseRepository.AddAsync(course);
-            var givenCourse = new CreateGivenCourseDto
+
+            var count = (input.TenantId.Length > input.EducatorId.Length)
+                ? input.TenantId.Length
+                : input.EducatorId.Length;
+            
+            for (var i = 0; i <count  ; i++)
             {
-                CourseId = course.Id,
-                TenantId = input.TenantId,
-                EducatorId = input.EducatorId
-            };
-            await _givenCourseAppService.CreateGivenCourse(givenCourse);
+                var givenCourse = new GivenCourse
+                {
+                    CourseId = course.Id,
+                    EducatorId = input.EducatorId[i],
+                    TenantId = input.TenantId[i]
+                };
+                await _givenCourseRepository.AddAsync(givenCourse);
+            }
         }
 
         public async Task<List<CourseDto>> GetCoursesByName(string courseName)

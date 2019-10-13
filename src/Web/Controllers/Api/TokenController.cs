@@ -2,6 +2,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using EgitimAPI.ApplicationCore.Services.UserService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,14 +26,14 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         [AllowAnonymous]
         [HttpPost]
         [Route("token")]
-        public IActionResult Post([FromBody]LoginDto request)
+        public async Task<IActionResult>  Post([FromBody]LoginDto request)
         {
             if (ModelState.IsValid)
             {
-                var user = _userService.GetUserForLogin(request); 
-                if (user == null)
+                var isUserValid = await _userService.Login(request); 
+                if (!isUserValid)
                 {
-                    return Unauthorized();
+                    throw new Exception("Username or password invalid !");
                 }
  
                 var claims = new[]
@@ -43,8 +44,8 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
  
                 var token = new JwtSecurityToken
                 (
-                    issuer: _configuration["Issuer"], //appsettings.json içerisinde bulunan issuer değeri
-                    audience: _configuration["Audience"],//appsettings.json içerisinde bulunan audince değeri
+                    issuer: _configuration["Issuer"], 
+                    audience: _configuration["Audience"],
                     claims: claims,
                     expires: DateTime.UtcNow.AddDays(30), // 30 gün geçerli olacak
                     notBefore: DateTime.UtcNow,

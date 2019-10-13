@@ -9,6 +9,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Interfaces
         Task<User> CreateUser(CreateUserDto input);
         Task<User> GetUserById(int id);
 
-        User GetUserForLogin(LoginDto input);
+        Task<bool> Login(LoginDto input);
     }
 }

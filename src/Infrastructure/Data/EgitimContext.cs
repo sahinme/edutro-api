@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Microsoft.EgitimAPI.Infrastructure.Data
 {
 
+    //dotnet ef migrations add UserModel --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
+
     public class EgitimContext : DbContext
     {
         public EgitimContext(DbContextOptions<EgitimContext> options) : base(options)
@@ -48,7 +50,7 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
                 .WithMany(s => s.EducatorTenants)
                 .HasForeignKey(sc => sc.EducatorId);
             
-            builder.Entity<GivenCourse>().HasKey(te => new { te.TenantId, te.CourseId });
+           // builder.Entity<GivenCourse>().HasKey(te => new { te.TenantId, te.CourseId });
 
             builder.Entity<GivenCourse>()
                 .HasOne<Tenant>(sc => sc.Tenant)
@@ -62,7 +64,7 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
                 .HasForeignKey(sc => sc.CourseId);
             
             
-           builder.Entity<GivenCourse>().HasKey(te => new { te.EducatorId, te.CourseId });
+          // builder.Entity<GivenCourse>().HasKey(te => new { te.EducatorId, te.CourseId });
 
            builder.Entity<GivenCourse>()
                 .HasOne(f => f.Educator)
@@ -73,6 +75,7 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
                 .HasOne(f => f.Course)
                 .WithMany()
                 .HasForeignKey(f => f.CourseId);
+  
         }
         
     }

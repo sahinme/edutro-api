@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
@@ -16,8 +17,12 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Users
         //meslek
         public string Profession { get; set; }
 
+        [Required]
+        [MinLength(6)]
         public string Username { get; set; }
 
+        [Required]
+        [MinLength(6)]
         public string Password { get; set; }
 
         [EmailAddress]
@@ -25,4 +30,5 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Users
 
         public string PhoneNumber { get; set; }
     }
+    
 }

@@ -31,6 +31,7 @@ using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService;
 using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EgitimAPI.Infrastructure.Logging;
 using Microsoft.EgitimAPI.Infrastructure.Services;
+using Microsoft.EgitimAPI.Lib;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 
@@ -100,6 +101,7 @@ namespace Microsoft.eShopWeb.Web
             services.AddScoped<IGivenCourseAppService, GivenCourseAppService>();
             services.AddScoped<IEducatorAppService, EducatorAppService>();
             services.AddScoped<ICategoryAppService, CategoryAppService>();
+            services.AddScoped<ICheckEdition, CheckEdition>();
             services.Configure<CatalogSettings>(Configuration);
             services.AddSingleton<IUriComposer>(new UriComposer(Configuration.Get<CatalogSettings>()));
 

@@ -68,6 +68,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService
                 TenantId = input.TenantId,
                 EducatorId = input.EducatorId
             };
+            
             await _givenCourseRepository.AddAsync(givenCourse);
         }
     }

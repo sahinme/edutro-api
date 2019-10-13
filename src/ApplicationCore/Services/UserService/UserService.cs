@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EgitimAPI.ApplicationCore.Services.UserService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
+using Microsoft.EgitimAPI.ApplicationCore.Services.PasswordHasher;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Services
@@ -23,13 +27,14 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services
                 Name = input.Name,
                 Surname = input.Surname,
                 EmailAddress = input.EmailAddress,
-                Password = input.Password,
                 Profession = input.Profession,
                 Gender = input.Gender,
                 Username = input.Username,
                 Age = input.Age,
                 PhoneNumber = input.PhoneNumber
             };
+            var hashedPassword = SecurePasswordHasherHelper.Hash(input.Password);
+            user.Password = hashedPassword;
             await _asyncRepository.AddAsync(user);
             return user;
         }
@@ -40,11 +45,21 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services
             return user;
         }
 
-        public User GetUserForLogin(LoginDto input)
+        public async Task<bool> Login(LoginDto input)
         {
-            var user = _asyncRepository.GetAll()
-                .FirstOrDefault(x => x.Username == input.Username && x.Password == input.Password);
-            return user;
+            var user = await _asyncRepository.GetAll()
+                .FirstOrDefaultAsync(x => x.Username == input.Username);
+            if (user == null)
+            {
+                throw new Exception("There is no user!");
+            }
+            var decodedPassword = SecurePasswordHasherHelper.Verify(input.Password, user.Password);
+            if (!decodedPassword)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

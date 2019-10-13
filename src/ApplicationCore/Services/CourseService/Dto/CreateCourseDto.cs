@@ -18,8 +18,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
         
         public long CategoryId { get; set; }
 
-        public long? EducatorId { get; set; }
+        public long[] EducatorId { get; set; }
 
-        public long? TenantId { get; set; }
+        public long[] TenantId { get; set; }
     }
 }
