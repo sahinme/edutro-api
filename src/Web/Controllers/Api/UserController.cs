@@ -27,5 +27,19 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
            var user = await _userService.CreateUser(input);
            return Ok(user);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(UpdateUserDto input)
+        {
+            await _userService.UpdateUser(input);
+            return Ok();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser(long id)
+        {
+            await _userService.DeleteUser(id);
+            return Ok();
+        }
     }
 }

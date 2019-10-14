@@ -13,11 +13,11 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services
 {
     public class UserService:IUserService
     {
-        private readonly IAsyncRepository<User> _asyncRepository;
+        private readonly IAsyncRepository<User> _userRepository;
 
-        public UserService(IAsyncRepository<User> asyncRepository)
+        public UserService(IAsyncRepository<User> userRepository)
         {
-            _asyncRepository = asyncRepository;
+            _userRepository = userRepository;
         }
         
         public async Task<User> CreateUser(CreateUserDto input)
@@ -35,19 +35,34 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services
             };
             var hashedPassword = SecurePasswordHasherHelper.Hash(input.Password);
             user.Password = hashedPassword;
-            await _asyncRepository.AddAsync(user);
+            await _userRepository.AddAsync(user);
             return user;
         }
 
         public async Task<User> GetUserById(int id)
         {
-            var user = await _asyncRepository.GetByIdAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
             return user;
+        }
+
+        public async Task UpdateUser(UpdateUserDto input)
+        {
+            var user = await _userRepository.GetByIdAsync(input.Id);
+            user.Age = input.Age;
+            user.Gender = input.Gender;
+            user.Name = input.Name;
+            user.Surname = input.Surname;
+            user.Profession = input.Profession;
+            user.EmailAddress = input.EmailAddress;
+            user.Username = input.Username;
+            user.PhoneNumber = input.PhoneNumber;
+            
+            await _userRepository.UpdateAsync(user);
         }
 
         public async Task<bool> Login(LoginDto input)
         {
-            var user = await _asyncRepository.GetAll()
+            var user = await _userRepository.GetAll()
                 .FirstOrDefaultAsync(x => x.Username == input.Username);
             if (user == null)
             {
@@ -60,6 +75,13 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services
             }
 
             return true;
+        }
+
+        public async Task DeleteUser(long id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            user.IsDeleted = true;
+            await _userRepository.UpdateAsync(user);
         }
     }
 }

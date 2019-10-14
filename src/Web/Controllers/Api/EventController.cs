@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService;
-using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EventService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EventService.Dto;
 
@@ -31,7 +28,6 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                 Console.WriteLine(e);
                 throw;
             }
-            
         }
         
         [HttpGet]
