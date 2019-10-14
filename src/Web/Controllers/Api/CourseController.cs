@@ -21,8 +21,8 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         {
             try
             {
-                 await _courseAppService.CreateCourse(input);
-                return Ok("created Course");
+                var course =  await _courseAppService.CreateCourse(input);
+                return Ok(course);
             }
             catch (Exception e)
             {
@@ -33,9 +33,17 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpGet]
-        public async Task<List<CourseDto>> GetCoursesByName(string courseName)
+        public async Task<IActionResult> GetCoursesByName(string courseName)
         {
-            return await _courseAppService.GetCoursesByName(courseName);
+            var courses =  await _courseAppService.GetCoursesByName(courseName);
+            return Ok(courses);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetCoursesByCategory(long categoryId)
+        {
+            var courses = await _courseAppService.GetCoursesByCategory(categoryId);
+            return Ok(courses);
         }
         
         [HttpGet]

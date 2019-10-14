@@ -24,7 +24,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Courses
         
         [ForeignKey(nameof(CourseContentId))]
         public virtual CourseContent CourseContent { get; set; }
-        public IList<GivenCourse> Tenants { get; set; }
-        public IList<GivenCourse> Educators { get; set; }
+        public  IList<GivenCourse> Owners { get; set; }
+        
     }
 }

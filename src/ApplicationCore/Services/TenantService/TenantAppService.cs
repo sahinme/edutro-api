@@ -100,7 +100,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                     }
                 }).ToList()
             }).ToList();
-            
+
             return model;
         }
 

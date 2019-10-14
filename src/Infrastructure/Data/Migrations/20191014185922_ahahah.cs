@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class ahahah : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -68,7 +68,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     Surname = table.Column<string>(nullable: true),
                     Profession = table.Column<string>(nullable: true),
                     Resume = table.Column<string>(nullable: true),
-                    ProfileImagePath = table.Column<string>(nullable: true)
+                    ProfileImagePath = table.Column<string>(nullable: true),
+                    IsPremium = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,8 +116,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     Gender = table.Column<string>(nullable: false),
                     Age = table.Column<int>(nullable: false),
                     Profession = table.Column<string>(nullable: true),
-                    Username = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true),
+                    Username = table.Column<string>(nullable: false),
+                    Password = table.Column<string>(nullable: false),
                     EmailAddress = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true)
                 },
@@ -228,8 +229,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 name: "GivenCourses",
                 columns: table => new
                 {
-                    CourseId = table.Column<long>(nullable: false),
-                    EducatorId = table.Column<long>(nullable: false),
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     ModifiedDate = table.Column<DateTime>(nullable: false),
@@ -237,16 +236,13 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     ModifiedBy = table.Column<string>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     CreatedDate = table.Column<DateTime>(nullable: false),
-                    TenantId = table.Column<long>(nullable: false),
-                    CourseId1 = table.Column<long>(nullable: true),
-                    CourseId2 = table.Column<long>(nullable: true),
-                    EducatorId1 = table.Column<long>(nullable: true)
+                    CourseId = table.Column<long>(nullable: false),
+                    TenantId = table.Column<long>(nullable: true),
+                    EducatorId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GivenCourses", x => new { x.EducatorId, x.CourseId });
-                    table.UniqueConstraint("AK_GivenCourses_Id", x => x.Id);
-                    table.UniqueConstraint("AK_GivenCourses_TenantId_CourseId", x => new { x.TenantId, x.CourseId });
+                    table.PrimaryKey("PK_GivenCourses", x => x.Id);
                     table.ForeignKey(
                         name: "FK_GivenCourses_Courses_CourseId",
                         column: x => x.CourseId,
@@ -254,26 +250,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GivenCourses_Courses_CourseId1",
-                        column: x => x.CourseId1,
-                        principalTable: "Courses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GivenCourses_Courses_CourseId2",
-                        column: x => x.CourseId2,
-                        principalTable: "Courses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_GivenCourses_Educators_EducatorId",
                         column: x => x.EducatorId,
-                        principalTable: "Educators",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GivenCourses_Educators_EducatorId1",
-                        column: x => x.EducatorId1,
                         principalTable: "Educators",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -282,7 +260,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -316,19 +294,14 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GivenCourses_CourseId1",
+                name: "IX_GivenCourses_EducatorId",
                 table: "GivenCourses",
-                column: "CourseId1");
+                column: "EducatorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GivenCourses_CourseId2",
+                name: "IX_GivenCourses_TenantId",
                 table: "GivenCourses",
-                column: "CourseId2");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GivenCourses_EducatorId1",
-                table: "GivenCourses",
-                column: "EducatorId1");
+                column: "TenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TenantEducator_EducatorId",

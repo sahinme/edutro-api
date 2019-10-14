@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
@@ -27,7 +28,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
             _tenantEducatorRepository = tenantEducatorRepository;
         }
         
-        public async Task CreateEducator(CreateEducatorDto input)
+        public async Task<Educator> CreateEducator(CreateEducatorDto input)
         {
             var educator = new Educator
             {
@@ -44,6 +45,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                 TenantId = input.TenantId
             };
             await _tenantEducatorRepository.AddAsync(tenantEducator);
+            return educator;
         }
 
         public async Task<List<EducatorDto>> GetAllEducators()
@@ -97,5 +99,18 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                 await _tenantEducatorRepository.UpdateAsync(tenantEducator);
             }
         }
+
+        public async Task<Educator> UpdateEducator(UpdateEducatorDto input)
+        {
+            var educator = await _educatorRepository.GetByIdAsync(input.Id);
+            educator.Name = input.Name;
+            educator.Surname = input.Surname;
+            educator.Profession = input.Profession;
+            educator.Resume = input.Resume;
+
+            await _educatorRepository.UpdateAsync(educator);
+            return educator;
+        }
+        
     }
 }

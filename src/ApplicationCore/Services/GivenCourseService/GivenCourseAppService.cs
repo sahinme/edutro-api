@@ -22,42 +22,41 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService
         // TODO: Educator dto eklenecek. Data cekilip nullCheck yapilacak ona gore tenant yada educator dto doldurulacak.
         public async Task<List<GivenCourseDto>> GetAllGivenCourses()
         {
-            var givenCourses = await _givenCourseRepository.GetAll().Include(x => x.Course).ThenInclude(x=>x.Category)
-                //.ThenInclude(x=>x.ParentCategory)
-                .Include(x => x.Tenant)
-                .Include(x=>x.Educator)
-                .Where(x=>x.Course.IsDeleted==false)
-                .Select(x => new GivenCourseDto
-                {
-                    Course = new CourseDto
-                    {
-                        Id = x.Course.Id,
-                        Title = x.Course.Title,
-                        Description = x.Course.Description,
-                        Quota = x.Course.Quota,
-                        Price = x.Course.Price,
-                        StartDate = x.Course.StartDate,
-                        EndDate = x.Course.EndDate,
-                        Category = new CategoryDto
-                        {
-                            Id = x.Course.Category.Id,
-                            Description = x.Course.Category.Description,
-                            DisplayName = x.Course.Category.DisplayName,
-                            ParentCategory = new ParentCategoryDto()
-//                            {
-//                                Id = x.Course.Category.ParentCategory.Id,
-//                                Description = x.Course.Category.ParentCategory.Description,
-//                                DisplayName = x.Course.Category.ParentCategory.DisplayName
-//                            }
-                        }
-                    },
-                    TenantName = x.Tenant.TenantName,
-                    LogoPath = x.Tenant.LogoPath,
-                    TenantId = x.Tenant.Id,
-                    EducatorId = x.Educator.Id,
-                    EducatorFullName = x.Educator.Name+" "+x.Educator.Surname
-                }).ToListAsync();
-            return givenCourses;
+//            var givenCourses = await _givenCourseRepository.GetAll().Include(x => x.Course).ThenInclude(x=>x.Category)
+//                //.ThenInclude(x=>x.ParentCategory)
+//                .Include(x => x.Tenant)
+//                //.Include(x=>x.Educator)
+//                .Where(x=>x.Course.IsDeleted==false)
+//                .Select(x => new GivenCourseDto
+//                {
+//                    Course = new CourseDto
+//                    {
+//                        Id = x.Course.Id,
+//                        Title = x.Course.Title,
+//                        Description = x.Course.Description,
+//                        Quota = x.Course.Quota,
+//                        Price = x.Course.Price,
+//                        StartDate = x.Course.StartDate,
+//                        EndDate = x.Course.EndDate,
+//                        Category = new CategoryDto
+//                        {
+//                            Id = x.Course.Category.Id,
+//                            Description = x.Course.Category.Description,
+//                            DisplayName = x.Course.Category.DisplayName,
+//                            ParentCategory = new ParentCategoryDto()
+////                            {
+////                                Id = x.Course.Category.ParentCategory.Id,
+////                                Description = x.Course.Category.ParentCategory.Description,
+////                                DisplayName = x.Course.Category.ParentCategory.DisplayName
+////                            }
+//                        },
+//                        Tenants = x.Tenant.
+//                    },
+//                    TenantName = x.Tenant.TenantName,
+//                    LogoPath = x.Tenant.LogoPath,
+//                    TenantId = x.Tenant.Id
+//                }).ToListAsync();
+            return new List<GivenCourseDto>();
         }
 
         public async Task CreateGivenCourse(CreateGivenCourseDto input)
@@ -66,7 +65,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService
             {
                 CourseId = input.CourseId,
                 TenantId = input.TenantId,
-                EducatorId = input.EducatorId
+               // EducatorId = input.EducatorId
             };
             
             await _givenCourseRepository.AddAsync(givenCourse);

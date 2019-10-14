@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EgitimContext))]
-    [Migration("20191010195043_Initial")]
-    partial class Initial
+    [Migration("20191014185922_ahahah")]
+    partial class ahahah
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -147,23 +147,17 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.GivenCourse", b =>
                 {
-                    b.Property<long?>("EducatorId");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("CourseId");
-
-                    b.Property<long?>("CourseId1");
-
-                    b.Property<long?>("CourseId2");
 
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("CreatorUserId");
 
-                    b.Property<long?>("EducatorId1");
-
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<long?>("EducatorId");
 
                     b.Property<bool>("IsDeleted");
 
@@ -171,22 +165,15 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("ModifiedDate");
 
-                    b.Property<long?>("TenantId")
-                        .IsRequired();
+                    b.Property<long?>("TenantId");
 
-                    b.HasKey("EducatorId", "CourseId");
-
-                    b.HasAlternateKey("Id");
-
-                    b.HasAlternateKey("TenantId", "CourseId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("CourseId1");
+                    b.HasIndex("EducatorId");
 
-                    b.HasIndex("CourseId2");
-
-                    b.HasIndex("EducatorId1");
+                    b.HasIndex("TenantId");
 
                     b.ToTable("GivenCourses");
                 });
@@ -202,6 +189,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     b.Property<string>("CreatorUserId");
 
                     b.Property<bool>("IsDeleted");
+
+                    b.Property<bool>("IsPremium");
 
                     b.Property<string>("ModifiedBy");
 
@@ -312,7 +301,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Password");
+                    b.Property<string>("Password")
+                        .IsRequired();
 
                     b.Property<string>("PhoneNumber");
 
@@ -320,7 +310,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<string>("Surname");
 
-                    b.Property<string>("Username");
+                    b.Property<string>("Username")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -362,31 +353,17 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.GivenCourse", b =>
                 {
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.Course", "Course")
-                        .WithMany()
+                        .WithMany("Tenants")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.Course")
-                        .WithMany("Educators")
-                        .HasForeignKey("CourseId1");
-
-                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.Course")
-                        .WithMany("Tenants")
-                        .HasForeignKey("CourseId2");
-
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Educators.Educator", "Educator")
-                        .WithMany()
-                        .HasForeignKey("EducatorId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Educators.Educator")
                         .WithMany("GivenCourses")
-                        .HasForeignKey("EducatorId1");
+                        .HasForeignKey("EducatorId");
 
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants.Tenant", "Tenant")
                         .WithMany("GivenCourses")
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("TenantId");
                 });
 
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator.TenantEducator", b =>

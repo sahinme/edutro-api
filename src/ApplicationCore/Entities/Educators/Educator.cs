@@ -25,6 +25,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Educators
         
         public IList<TenantEducator.TenantEducator> EducatorTenants { get; set; }
         
-        public IList<GivenCourse> GivenCourses { get; set; }
+        public virtual IList<GivenCourse> GivenCourses { get; set; }
     }
 }

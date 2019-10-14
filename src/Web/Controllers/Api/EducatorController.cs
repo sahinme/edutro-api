@@ -21,8 +21,24 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         {
             try
             {
-                await _educatorAppService.CreateEducator(input);
-                return Ok("Created educator");
+                var user = await _educatorAppService.CreateEducator(input);
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+        }
+        
+        [HttpPut]
+        public async Task<IActionResult> UpdateEducator(UpdateEducatorDto input)
+        {
+            try
+            {
+                var educator = await _educatorAppService.UpdateEducator(input);
+                return Ok(educator);
             }
             catch (Exception e)
             {
