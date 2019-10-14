@@ -1,6 +1,7 @@
 ﻿using Microsoft.EgitimAPI.ApplicationCore.Entities.Categories;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Events;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
@@ -34,6 +35,10 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
         public DbSet<CourseContent> CourseContents { get; set; }
         
         public DbSet<TenantEducator> TenantEducator { get; set; }
+        
+        public DbSet<Event> Events { get; set; }
+
+        public DbSet<GivenEvent> GivenEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

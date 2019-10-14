@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Events;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
@@ -26,5 +27,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Educators
         public IList<TenantEducator.TenantEducator> EducatorTenants { get; set; }
         
         public virtual IList<GivenCourse> GivenCourses { get; set; }
+        public  IList<GivenEvent> GivenEvents { get; set; }
     }
 }
