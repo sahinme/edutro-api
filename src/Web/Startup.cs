@@ -20,6 +20,7 @@ using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EgitimAPI;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.EmailSettings;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category;
@@ -110,6 +111,8 @@ namespace Microsoft.eShopWeb.Web
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
             services.AddTransient<IEmailSender, EmailSender>();
 
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            
             services.AddAutoMapper(typeof(Startup));
             
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

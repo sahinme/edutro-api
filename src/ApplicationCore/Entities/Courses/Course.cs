@@ -17,6 +17,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Courses
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public long CategoryId { get; set; }
+
+        public AdvertisingState AdvertisingState { get; set; }
         public long? CourseContentId { get; set; }
         
         [ForeignKey(nameof(CategoryId))]

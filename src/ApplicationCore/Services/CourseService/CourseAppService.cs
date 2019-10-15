@@ -92,7 +92,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 .Include(x => x.Course).ThenInclude(x => x.Category)
                 .Include(x => x.Tenant)
                 .Include(x => x.Educator)
-                .Where(x=>x.IsEnded==false)
+                .Where(x=>x.IsEnded==false && x.Course.AdvertisingState!=AdvertisingState.Stopped)
                 .Select(x => new AdvertisingCourseDto
                 {
                     CourseInfo = new CourseDto
@@ -154,6 +154,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 StartDate = input.StartDate,
                 EndDate = input.EndDate,
                 CategoryId = input.CategoryId,
+                AdvertisingState = AdvertisingState.Continues
             };
             await _courseRepository.AddAsync(course);
 
@@ -292,7 +293,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
 
         public async Task<List<CourseDto>> GetAllCourses()
         {
-            var courses = await _courseRepository.GetAll().Where(x => x.IsDeleted == false)
+            var courses = await _courseRepository.GetAll().Where(x => x.IsDeleted == false && x.AdvertisingState != AdvertisingState.Stopped)
                 .Include(x => x.Owners).ThenInclude(x => x.Tenant)
                 .Include(x=>x.Owners).ThenInclude(x=>x.Educator)
                 .Include(x => x.Category)

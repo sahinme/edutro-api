@@ -1,4 +1,5 @@
 using System;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
 {
@@ -15,7 +16,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
         public DateTime? StartDate { get; set; }
         
         public DateTime? EndDate { get; set; }
-        
         public long CategoryId { get; set; }
 
         public long[] EducatorId { get; set; }

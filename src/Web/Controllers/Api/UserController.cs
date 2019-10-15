@@ -9,10 +9,14 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
     public class UserController:BaseApiController
     {
         private readonly IUserService _userService;
+        private readonly IEmailSender _emailSender;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService,
+                IEmailSender emailSender
+            )
         {
             _userService = userService;
+            _emailSender = emailSender;
         }
         
         [HttpGet]
@@ -40,6 +44,12 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         {
             await _userService.DeleteUser(id);
             return Ok();
+        }
+
+        [HttpPost]
+        public async Task EmailSend(string email, string subject, string message)
+        {
+            await _emailSender.SendEmailAsync(email, subject, message);
         }
     }
 }
