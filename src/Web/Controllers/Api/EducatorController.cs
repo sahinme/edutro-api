@@ -49,10 +49,35 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpGet]
-        public async Task<List<EducatorDto>> GetAllEducator()
+        public async Task<IActionResult> GetEducatorByName(string educatorName)
         {
-            return await _educatorAppService.GetAllEducators();
+            try
+            {
+                var educators = await _educatorAppService.GetEducatorByName(educatorName);
+                return Ok(educators);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetAllEducator()
+        {
+            var educators = await _educatorAppService.GetAllEducators();
+            return Ok(educators);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetEducatorById(long educatorId)
+        {
+            var educator = await _educatorAppService.GetEducatorById(educatorId);
+            return Ok(educator);
+        }
+        
 
         [HttpDelete]
         public async Task<IActionResult> DeleteEducator(long id)

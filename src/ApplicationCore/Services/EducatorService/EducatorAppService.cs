@@ -86,6 +86,83 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
             return educators;
         }
 
+        public async Task<List<EducatorDto>> GetEducatorByName(string educatorName)
+        {
+            var educator = await _educatorRepository.GetAll()
+                .Where(x => x.Name.Contains(educatorName) || x.Surname.Contains(educatorName))
+                .Include(x => x.EducatorTenants)
+                .ThenInclude(x => x.Tenant)
+                .Include(x => x.GivenCourses).ThenInclude(x => x.Course)
+                .Select(x => new EducatorDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Surname = x.Surname,
+                    Profession = x.Profession,
+                    Resume = x.Resume,
+                    EducatorTenants = x.EducatorTenants.Select(tenant => new EducatorTenantDto
+                    {
+                        TenantId = tenant.Tenant.Id,
+                        TenantName = tenant.Tenant.TenantName
+                    }).ToList(),
+                    Courses = x.GivenCourses.Select(course => new CourseDto
+                    {
+                        Id = course.Course.Id,
+                        Title = course.Course.Title,
+                        Description = course.Course.Description,
+                        StartDate = course.Course.StartDate,
+                        EndDate = course.Course.EndDate,
+                        Quota = course.Course.Quota,
+                        Price = course.Course.Price,
+                        Category = new CategoryDto
+                        {
+                            DisplayName = course.Course.Category.DisplayName,
+                            Id = course.Course.Category.Id,
+                            Description = course.Course.Category.Description,
+                        }
+                    }).ToList()
+                }).ToListAsync();
+            return educator;
+        }
+
+        public async Task<EducatorDto> GetEducatorById(long educatorId)
+        {
+            var educator = await _educatorRepository.GetAll()
+                .Include(x => x.EducatorTenants)
+                .ThenInclude(x => x.Tenant)
+                .Include(x => x.GivenCourses).ThenInclude(x => x.Course)
+                .Select(x => new EducatorDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Surname = x.Surname,
+                    Profession = x.Profession,
+                    Resume = x.Resume,
+                    EducatorTenants = x.EducatorTenants.Select(tenant => new EducatorTenantDto
+                    {
+                        TenantId = tenant.Tenant.Id,
+                        TenantName = tenant.Tenant.TenantName
+                    }).ToList(),
+                    Courses = x.GivenCourses.Select(course => new CourseDto
+                    {
+                        Id = course.Course.Id,
+                        Title = course.Course.Title,
+                        Description = course.Course.Description,
+                        StartDate = course.Course.StartDate,
+                        EndDate = course.Course.EndDate,
+                        Quota = course.Course.Quota,
+                        Price = course.Course.Price,
+                        Category = new CategoryDto
+                        {
+                            DisplayName = course.Course.Category.DisplayName,
+                            Id = course.Course.Category.Id,
+                            Description = course.Course.Category.Description,
+                        }
+                    }).ToList()
+                }).FirstOrDefaultAsync(x=>x.Id==educatorId);
+            return educator;
+        }
+
         public async Task Delete(long id)
         {
             var educator = await _educatorRepository.GetByIdAsync(id);

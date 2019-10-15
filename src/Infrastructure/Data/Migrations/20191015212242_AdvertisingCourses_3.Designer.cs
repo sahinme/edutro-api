@@ -4,14 +4,16 @@ using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EgitimContext))]
-    partial class EgitimContextModelSnapshot : ModelSnapshot
+    [Migration("20191015212242_AdvertisingCourses_3")]
+    partial class AdvertisingCourses_3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,7 +82,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseId");
+                    b.HasIndex("CourseId")
+                        .IsUnique();
 
                     b.HasIndex("EducatorId");
 
@@ -94,6 +97,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long?>("AdvertisingId");
 
                     b.Property<long>("CategoryId");
 
@@ -122,6 +127,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     b.Property<string>("Title");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AdvertisingId");
 
                     b.HasIndex("CategoryId");
 
@@ -441,8 +448,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.AdvertisingCourse", b =>
                 {
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId")
+                        .WithOne()
+                        .HasForeignKey("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.AdvertisingCourse", "CourseId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Educators.Educator", "Educator")
@@ -456,6 +463,10 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.Course", b =>
                 {
+                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.AdvertisingCourse", "AdvertisingCourse")
+                        .WithMany()
+                        .HasForeignKey("AdvertisingId");
+
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Categories.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")

@@ -20,15 +20,18 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
     {
         private readonly IAsyncRepository<Course> _courseRepository;
         private readonly IAsyncRepository<GivenCourse> _givenCourseRepository;
+        private readonly IAsyncRepository<AdvertisingCourse> _advertisingCourseRepository;
         private readonly ICheckEdition _checkEdition;
 
         public CourseAppService(IAsyncRepository<Course> courseRepository,
             IAsyncRepository<GivenCourse> givenCourseRepository,
+            IAsyncRepository<AdvertisingCourse> advertisingCourseRepository,
                 ICheckEdition checkEdition
             )
         {
             _courseRepository = courseRepository;
             _givenCourseRepository =givenCourseRepository;
+            _advertisingCourseRepository = advertisingCourseRepository;
             _checkEdition = checkEdition;
         }
         public async Task<Course> CreateCourse(CreateCourseDto input)
@@ -76,6 +79,109 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 };
                 await _givenCourseRepository.AddAsync(givenCourse);
             }
+
+            return course;
+        }
+
+        public async Task<List<AdvertisingCourseDto>> GetAllAdvertisingCourses()
+        {
+            var courses = await _advertisingCourseRepository.GetAll().Include(x => x.Course)
+                .ThenInclude(x => x.Owners).ThenInclude(x => x.Tenant)
+                .Include(x => x.Course)
+                .ThenInclude(x => x.Owners).ThenInclude(x => x.Educator)
+                .Include(x => x.Course).ThenInclude(x => x.Category)
+                .Include(x => x.Tenant)
+                .Include(x => x.Educator)
+                .Where(x=>x.IsEnded==false)
+                .Select(x => new AdvertisingCourseDto
+                {
+                    CourseInfo = new CourseDto
+                    {
+                        Id = x.Course.Id,
+                        Title = x.Course.Title,
+                        Description = x.Course.Description,
+                        Quota = x.Course.Quota,
+                        Price = x.Course.Price,
+                        StartDate = x.Course.StartDate,
+                        EndDate = x.Course.EndDate,
+                        Category = new CategoryDto
+                        {
+                            Id = x.Course.Category.Id,
+                            Description = x.Course.Category.Description,
+                            DisplayName = x.Course.Category.DisplayName,
+                            ParentCategory = new ParentCategoryDto()
+                        },
+                        Tenants = x.Course.Owners.Select(t => new CourseTenantDto
+                        {
+                            TenantId = t.Tenant.Id,
+                            TenantName = t.Tenant.TenantName,
+                            LogoPath = t.Tenant.LogoPath
+                        }).ToList(),
+                        Educators = x.Course.Owners.Select(e => new CourseEducatorDto
+                        {
+                            EducatorId = e.Educator.Id,
+                            EducatorName = e.Educator.Name,
+                            Profession = e.Educator.Profession,
+                            ProfileImgPath = e.Educator.ProfileImagePath
+                        }).ToList(),
+                    },
+                    OwnerEducator = new CourseEducatorDto
+                    {
+                        EducatorId = x.Educator.Id,
+                        EducatorName = x.Educator.Name + " " + x.Educator.Surname,
+                        Profession = x.Educator.Profession,
+                        ProfileImgPath = x.Educator.ProfileImagePath
+                    },
+                    OwnerTenant = new CourseTenantDto
+                    {
+                        TenantId = x.Tenant.Id,
+                        TenantName = x.Tenant.TenantName,
+                        LogoPath = x.Tenant.LogoPath
+                    }
+                }).ToListAsync();
+            return courses;
+        }
+
+        public async Task<Course> CreateAdvertisingCourse(CreateAdvertisingCourseDto input)
+        {
+         
+            var course = new Course
+            {
+                Title = input.Title,
+                Description = input.Description,
+                Quota = input.Quota,
+                Price = input.Price,
+                StartDate = input.StartDate,
+                EndDate = input.EndDate,
+                CategoryId = input.CategoryId,
+            };
+            await _courseRepository.AddAsync(course);
+
+            var count = (input.TenantId.Length > input.EducatorId.Length)
+                ? input.TenantId.Length
+                : input.EducatorId.Length;
+            
+            for (var i = 0; i <count  ; i++)
+            {
+                var givenCourse = new GivenCourse
+                {
+                    CourseId = course.Id,
+                    EducatorId = input.EducatorId[i],
+                    TenantId = input.TenantId[i]
+                };
+                await _givenCourseRepository.AddAsync(givenCourse);
+            }
+
+            var advertisingModel = new AdvertisingCourse
+            {
+                CourseId = course.Id,
+                TenantId = input.AdvertisingInfo.OwnerTenantId,
+                EducatorId = input.AdvertisingInfo.OwnerEducatorId,
+                Price = input.AdvertisingInfo.Price,
+                StartDateTime = input.AdvertisingInfo.StartDateTime,
+                EndDateTime = input.AdvertisingInfo.EndDateTime
+            };
+            await _advertisingCourseRepository.AddAsync(advertisingModel);
 
             return course;
         }

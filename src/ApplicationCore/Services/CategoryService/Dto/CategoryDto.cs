@@ -1,3 +1,5 @@
+using System;
+
 namespace Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto
 {
     public class CategoryDto

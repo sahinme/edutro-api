@@ -4,14 +4,16 @@ using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EgitimContext))]
-    partial class EgitimContextModelSnapshot : ModelSnapshot
+    [Migration("20191015201339_AdvertisingCourses_2")]
+    partial class AdvertisingCourses_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,8 +67,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     b.Property<DateTime>("EndDateTime");
 
                     b.Property<bool>("IsDeleted");
-
-                    b.Property<bool>("IsEnded");
 
                     b.Property<string>("ModifiedBy");
 

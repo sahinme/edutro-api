@@ -30,5 +30,20 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             }
           
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories()
+        {
+            try
+            {
+                var categories = await _categoryAppService.GetAllCategories();
+                return Ok(categories);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 }

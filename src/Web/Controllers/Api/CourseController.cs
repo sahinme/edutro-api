@@ -32,13 +32,36 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             
         }
         
+        [HttpPost]
+        public async Task<IActionResult> CreateAdvertisingCourse(CreateAdvertisingCourseDto input)
+        {
+            try
+            {
+                var course = await _courseAppService.CreateAdvertisingCourse(input);
+                return Ok(course);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+        }
+        
         [HttpGet]
         public async Task<IActionResult> GetCoursesByName(string courseName)
         {
             var courses =  await _courseAppService.GetCoursesByName(courseName);
             return Ok(courses);
         }
-        
+
+        [HttpGet]
+        public async Task<IActionResult> GetAdvertisingCourses()
+        {
+            var courses = await _courseAppService.GetAllAdvertisingCourses();
+            return Ok(courses);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetCoursesByCategory(long categoryId)
         {

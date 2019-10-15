@@ -23,9 +23,10 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants
 
         public string LogoPath { get; set; }
         public IList<TenantEducator.TenantEducator> TenantEducators { get; set; }
-        
         public  IList<GivenCourse> GivenCourses { get; set; }
         
         public  IList<GivenEvent> GivenEvents { get; set; }
+
+        public IList<AdvertisingCourse> AdvertisingCourses { get; set; }
     }
 }

@@ -11,6 +11,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
         Task<List<EducatorDto>> GetAllEducators();
         Task Delete(long id);
         Task<Educator> UpdateEducator(UpdateEducatorDto input);
+        Task<List<EducatorDto>> GetEducatorByName(string educatorName);
+        Task<EducatorDto> GetEducatorById(long educatorId);
 
     }
 }

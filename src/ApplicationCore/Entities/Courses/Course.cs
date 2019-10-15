@@ -18,13 +18,12 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Courses
         public DateTime? EndDate { get; set; }
         public long CategoryId { get; set; }
         public long? CourseContentId { get; set; }
-
+        
         [ForeignKey(nameof(CategoryId))]
         public virtual Category Category { get; set; }        
         
         [ForeignKey(nameof(CourseContentId))]
         public virtual CourseContent CourseContent { get; set; }
         public  IList<GivenCourse> Owners { get; set; }
-        
     }
 }

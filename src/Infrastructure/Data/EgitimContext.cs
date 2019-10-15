@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Microsoft.EgitimAPI.Infrastructure.Data
 {
 
-    //dotnet ef migrations add UserModel --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
+    //dotnet ef migrations add AdvertisingCourses --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
 
     public class EgitimContext : DbContext
     {
@@ -39,6 +39,8 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
         public DbSet<Event> Events { get; set; }
 
         public DbSet<GivenEvent> GivenEvents { get; set; }
+
+        public DbSet<AdvertisingCourse> AdvertisingCourses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
