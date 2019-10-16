@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Categories;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Comments;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
@@ -14,10 +15,10 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Courses
         public string Description { get; set; }
         public int Quota { get; set; }
         public double Price { get; set; }
+        public float Score { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public long CategoryId { get; set; }
-
         public AdvertisingState AdvertisingState { get; set; }
         public long? CourseContentId { get; set; }
         
@@ -27,5 +28,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Courses
         [ForeignKey(nameof(CourseContentId))]
         public virtual CourseContent CourseContent { get; set; }
         public  IList<GivenCourse> Owners { get; set; }
+        public ICollection<Comment> Comments { get; set; }
+
     }
 }

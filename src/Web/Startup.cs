@@ -25,6 +25,7 @@ using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CategoryService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.CommentService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EventService;
@@ -104,6 +105,7 @@ namespace Microsoft.eShopWeb.Web
             services.AddScoped<IEducatorAppService, EducatorAppService>();
             services.AddScoped<ICategoryAppService, CategoryAppService>();
             services.AddScoped<IEventAppService, EventAppService>();
+            services.AddScoped<ICommentAppService, CommentAppService>();
             services.AddScoped<ICheckEdition, CheckEdition>();
             services.Configure<CatalogSettings>(Configuration);
             services.AddSingleton<IUriComposer>(new UriComposer(Configuration.Get<CatalogSettings>()));

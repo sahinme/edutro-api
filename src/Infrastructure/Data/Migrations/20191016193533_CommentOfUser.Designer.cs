@@ -4,14 +4,16 @@ using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EgitimContext))]
-    partial class EgitimContextModelSnapshot : ModelSnapshot
+    [Migration("20191016193533_CommentOfUser")]
+    partial class CommentOfUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,8 +154,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<int>("Quota");
 
-                    b.Property<float>("Score");
-
                     b.Property<DateTime?>("StartDate");
 
                     b.Property<string>("Title");
@@ -280,8 +280,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<string>("Resume");
 
-                    b.Property<float>("Score");
-
                     b.Property<string>("Surname");
 
                     b.HasKey("Id");
@@ -363,41 +361,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     b.ToTable("GivenEvents");
                 });
 
-            modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications.Notification", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Content");
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<string>("CreatorUserId");
-
-                    b.Property<bool>("IsDeleted");
-
-                    b.Property<bool>("IsRead");
-
-                    b.Property<string>("ModifiedBy");
-
-                    b.Property<DateTime>("ModifiedDate");
-
-                    b.Property<long>("OwnerId");
-
-                    b.Property<string>("OwnerType");
-
-                    b.Property<long>("SenderId");
-
-                    b.Property<string>("SenderType");
-
-                    b.Property<string>("Title");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notifications");
-                });
-
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator.TenantEducator", b =>
                 {
                     b.Property<long>("Id")
@@ -435,6 +398,8 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<string>("Address");
 
+                    b.Property<long?>("CommentId");
+
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("CreatorUserId");
@@ -455,11 +420,11 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<string>("PhoneNumber2");
 
-                    b.Property<float>("Score");
-
                     b.Property<string>("TenantName");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
 
                     b.ToTable("Tenants");
                 });
@@ -629,6 +594,13 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                         .WithMany("TenantEducators")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants.Tenant", b =>
+                {
+                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Comments.Comment")
+                        .WithMany("Tenants")
+                        .HasForeignKey("CommentId");
                 });
 #pragma warning restore 612, 618
         }

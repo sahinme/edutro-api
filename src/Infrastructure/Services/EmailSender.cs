@@ -67,7 +67,6 @@ namespace Microsoft.EgitimAPI.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                // TODO: handle exception
                 throw new InvalidOperationException(ex.Message);
             }
         }

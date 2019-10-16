@@ -4,14 +4,16 @@ using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EgitimContext))]
-    partial class EgitimContextModelSnapshot : ModelSnapshot
+    [Migration("20191016225259_Notifications")]
+    partial class Notifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -371,13 +373,15 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<string>("Content");
 
+                    b.Property<long?>("CourseId");
+
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("CreatorUserId");
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<long?>("EducatorId");
 
-                    b.Property<bool>("IsRead");
+                    b.Property<bool>("IsDeleted");
 
                     b.Property<string>("ModifiedBy");
 
@@ -391,9 +395,21 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<string>("SenderType");
 
+                    b.Property<long?>("TenantId");
+
                     b.Property<string>("Title");
 
+                    b.Property<long?>("UserId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("EducatorId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
                 });
@@ -616,6 +632,25 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants.Tenant", "Tenant")
                         .WithMany("GivenEvents")
                         .HasForeignKey("TenantId");
+                });
+
+            modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications.Notification", b =>
+                {
+                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Courses.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId");
+
+                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Educators.Educator", "Educator")
+                        .WithMany()
+                        .HasForeignKey("EducatorId");
+
+                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator.TenantEducator", b =>

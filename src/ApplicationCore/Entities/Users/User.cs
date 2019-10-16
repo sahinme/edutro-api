@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Users

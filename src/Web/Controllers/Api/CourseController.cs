@@ -70,11 +70,26 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpGet]
-        public async Task<List<CourseDto>> GetAllCourses()
+        public async Task<IActionResult> GetAllCourses()
         {
-            return await _courseAppService.GetAllCourses();
+            var result = await _courseAppService.GetAllCourses();
+            return Ok(result);
         }
-        
+
+        [HttpPost]
+        public async Task<IActionResult> AddFavoriteCourse(CreateFavoriteCourseDto input)
+        {
+            await _courseAppService.AddFavoriteCourse(input);
+            return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFavoriteCourses(long id)
+        {
+            var result = await _courseAppService.GetFavoriteCourses(id);
+            return Ok(result);
+        }
+
         [HttpDelete]
         public async Task DeleteCourse(long courseId)
         {

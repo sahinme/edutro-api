@@ -8,6 +8,7 @@ using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Services.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
@@ -21,17 +22,20 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         private readonly IAsyncRepository<Course> _courseRepository;
         private readonly IAsyncRepository<GivenCourse> _givenCourseRepository;
         private readonly IAsyncRepository<AdvertisingCourse> _advertisingCourseRepository;
+        private readonly IAsyncRepository<FavoriteCourse> _favoriteCourseRepository;
         private readonly ICheckEdition _checkEdition;
 
         public CourseAppService(IAsyncRepository<Course> courseRepository,
             IAsyncRepository<GivenCourse> givenCourseRepository,
             IAsyncRepository<AdvertisingCourse> advertisingCourseRepository,
+            IAsyncRepository<FavoriteCourse> favoriteCourseRepository,
                 ICheckEdition checkEdition
             )
         {
             _courseRepository = courseRepository;
             _givenCourseRepository =givenCourseRepository;
             _advertisingCourseRepository = advertisingCourseRepository;
+            _favoriteCourseRepository = favoriteCourseRepository;
             _checkEdition = checkEdition;
         }
         public async Task<Course> CreateCourse(CreateCourseDto input)
@@ -104,6 +108,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                         Price = x.Course.Price,
                         StartDate = x.Course.StartDate,
                         EndDate = x.Course.EndDate,
+                        Score = x.Course.Score,
                         Category = new CategoryDto
                         {
                             Id = x.Course.Category.Id,
@@ -186,9 +191,51 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
 
             return course;
         }
-        public async Task<List<CourseDto>> GetCoursesByName(string courseName)
+
+        public async Task AddFavoriteCourse(CreateFavoriteCourseDto input)
         {
-            var course = await _courseRepository.GetAll().Include(x=>x.Category)
+            var model = new FavoriteCourse
+            {
+                CourseId = input.CourseId,
+                UserId = input.UserId
+            };
+            await _favoriteCourseRepository.AddAsync(model);
+        }
+
+        public async Task<PagedResultDto<FavoriteCourseDto>> GetFavoriteCourses(long userId)
+        {
+            var courses = await _favoriteCourseRepository.GetAll().Where(x => x.UserId == userId)
+                .Include(x => x.Course)
+                .ThenInclude(x => x.Owners).ThenInclude(x => x.Educator)
+                .Include(x => x.User)
+                .Select(x => new FavoriteCourseDto
+                {
+                    CourseId = x.Course.Id,
+                    CourseName = x.Course.Title,
+                    Tenants = x.Course.Owners.Select(t=> new CourseTenantDto
+                    {
+                        TenantId = t.Tenant.Id,
+                        LogoPath = t.Tenant.LogoPath,
+                        TenantName = t.Tenant.TenantName
+                    }).ToList(),
+                    Educators = x.Course.Owners.Select(e=>new CourseEducatorDto
+                    {
+                        EducatorId = e.Educator.Id,
+                        EducatorName=e.Educator.Name,
+                        Profession = e.Educator.Profession,
+                        ProfileImgPath = e.Educator.ProfileImagePath
+                    }).ToList()
+                }).ToListAsync();
+            return new PagedResultDto<FavoriteCourseDto>
+            {
+                Results = courses,
+                Count = courses.Count
+            };
+        }
+        
+        public async Task<PagedResultDto<CourseDto>> GetCoursesByName(string courseName)
+        {
+            var courses = await _courseRepository.GetAll().Include(x=>x.Category)
                 .Include(x => x.Owners).ThenInclude(x => x.Tenant)
                 .Include(x=>x.Owners).ThenInclude(x=>x.Educator)
                 .Where(x => x.Title.Contains(courseName) || x.Description.Contains(courseName))
@@ -201,6 +248,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 Price = x.Price,
                 StartDate = x.StartDate,
                 EndDate = x.EndDate,
+                Score = x.Score,
                 Category = new CategoryDto
                 {
                     Id = x.Category.Id,
@@ -222,10 +270,15 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     ProfileImgPath = e.Educator.ProfileImagePath
                 }).ToList()
             }).ToListAsync();
-            return course;
+            var result = new PagedResultDto<CourseDto>
+            {
+                Results = courses,
+                Count = courses.Count
+            };
+            return result;
         }
 
-        public async Task<List<CourseDto>> GetCoursesByCategory(long categoryId)
+        public async Task<PagedResultDto<CourseDto>> GetCoursesByCategory(long categoryId)
         {
             var courses = await _courseRepository.GetAll().Include(x => x.Category)
                 .Include(x => x.Owners).ThenInclude(x => x.Tenant)
@@ -239,6 +292,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     Price = x.Price,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
+                    Score = x.Score,
                     Category = new CategoryDto
                     {
                         Id = x.Category.Id,
@@ -260,7 +314,12 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                         ProfileImgPath = e.Educator.ProfileImagePath
                     }).ToList()
                 }).ToListAsync();
-            return courses;
+            var result = new PagedResultDto<CourseDto>
+            {
+                Results = courses,
+                Count = courses.Count
+            };
+            return result;
         }
 
         public async Task DeleteCourse(long id)
@@ -291,12 +350,13 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
 
         }
 
-        public async Task<List<CourseDto>> GetAllCourses()
+        public async Task<PagedResultDto<CourseDto>> GetAllCourses()
         {
             var courses = await _courseRepository.GetAll().Where(x => x.IsDeleted == false && x.AdvertisingState != AdvertisingState.Stopped)
                 .Include(x => x.Owners).ThenInclude(x => x.Tenant)
                 .Include(x=>x.Owners).ThenInclude(x=>x.Educator)
                 .Include(x => x.Category)
+                .Include(x=>x.Comments)
                 .Select(x => new CourseDto
                 {
                     Id = x.Id,
@@ -306,6 +366,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     Price = x.Price,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
+                    Score = x.Score,
                     Category = new CategoryDto
                     {
                         Id = x.Category.Id,
@@ -325,9 +386,15 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                         EducatorName=e.Educator.Name,
                         Profession = e.Educator.Profession,
                         ProfileImgPath = e.Educator.ProfileImagePath
-                    }).ToList()
+                    }).ToList(),
                 }).ToListAsync();
-            return courses;
+            var result = new PagedResultDto<CourseDto>
+            {
+                Results = courses,
+                Count = courses.Count
+            };
+            return result;
         }
+        
     }
 }

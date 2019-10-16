@@ -61,6 +61,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                     Surname = x.Surname,
                     Profession = x.Profession,
                     Resume = x.Resume,
+                    Score = x.Score,
                     EducatorTenants = x.EducatorTenants.Select(tenant => new EducatorTenantDto
                     {
                         TenantId = tenant.Tenant.Id,
@@ -100,6 +101,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                     Surname = x.Surname,
                     Profession = x.Profession,
                     Resume = x.Resume,
+                    Score = x.Score,
                     EducatorTenants = x.EducatorTenants.Select(tenant => new EducatorTenantDto
                     {
                         TenantId = tenant.Tenant.Id,
@@ -138,6 +140,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                     Surname = x.Surname,
                     Profession = x.Profession,
                     Resume = x.Resume,
+                    Score = x.Score,
                     EducatorTenants = x.EducatorTenants.Select(tenant => new EducatorTenantDto
                     {
                         TenantId = tenant.Tenant.Id,

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Comments;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
@@ -22,6 +23,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
         public DateTime? EndDate { get; set; }
         
         public CategoryDto Category { get; set; }
+
+        public float Score { get; set; }
         
         public List<CourseTenantDto> Tenants { get; set; }
         
