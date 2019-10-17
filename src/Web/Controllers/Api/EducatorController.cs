@@ -31,7 +31,12 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             }
             
         }
-        
+        [HttpPost]
+        public async Task HandleSubscribeTenant(SubscribeDto input)
+        {
+            await _educatorAppService.HandleSubscribeTenant(input);
+        }
+     
         [HttpPut]
         public async Task<IActionResult> UpdateEducator(UpdateEducatorDto input)
         {

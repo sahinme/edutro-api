@@ -1,4 +1,5 @@
-﻿using Microsoft.EgitimAPI.ApplicationCore.Entities.Categories;
+﻿using System.Collections.Generic;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Categories;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Comments;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
@@ -8,11 +9,12 @@ using Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Microsoft.EgitimAPI.Infrastructure.Data
 {
 
-    //dotnet ef migrations add Comment_2 --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
+    //dotnet ef migrations add notify-json --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
 
     public class EgitimContext : DbContext
     {

@@ -166,6 +166,14 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
             return educator;
         }
 
+        public async Task HandleSubscribeTenant(SubscribeDto input)
+        {
+            var relation = await _tenantEducatorRepository.GetAll()
+                .FirstOrDefaultAsync(x => x.EducatorId == input.EducatorId && x.TenantId == input.TenantId);
+            relation.IsAccepted = input.IsAccepted;
+            await _tenantEducatorRepository.UpdateAsync(relation);
+        }
+
         public async Task Delete(long id)
         {
             var educator = await _educatorRepository.GetByIdAsync(id);

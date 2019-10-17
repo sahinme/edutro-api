@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CommentService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Services.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,15 +23,16 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
     {
         private readonly IAsyncRepository<Tenant> _tenantRepository;
         private readonly IAsyncRepository<TenantEducator> _tenantEducatorRepository;
-        private readonly IMapper _mapper;
+        private readonly INotificationAppService _notificationAppService;
 
         public TenantAppService(IAsyncRepository<Tenant> tenantRepository,IMapper mapper,
-            IAsyncRepository<TenantEducator> tenantEducatorRepository
+            IAsyncRepository<TenantEducator> tenantEducatorRepository,
+            INotificationAppService notificationAppService
             )
         {
             _tenantRepository = tenantRepository;
             _tenantEducatorRepository = tenantEducatorRepository;
-            _mapper = mapper;
+            _notificationAppService = notificationAppService;
         }
         
         public async Task CreateTenant(CreateTenantDto input)
@@ -145,6 +151,26 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                 educatorTenant.IsDeleted = true;
                 await _tenantEducatorRepository.UpdateAsync(educatorTenant);
             }
+        }
+
+        public async Task AddEducator(CreateTenantEducatorDto input)
+        {
+            var tenant = await _tenantRepository.GetByIdAsync(input.TenantId);
+            var model = new TenantEducator
+            {
+                EducatorId = input.EducatorId,
+                TenantId = input.TenantId
+            };
+            await _tenantEducatorRepository.AddAsync(model);
+            await _notificationAppService.CreateNotify(new CreateNotificationDto
+            {
+                OwnerId = input.EducatorId,
+                OwnerType = "Educator",
+                SenderId = input.TenantId,
+                SenderType = "Tenant",
+                Content = tenant.TenantName+" "+"sizi eğitmen olarak eklemek istiyor.",
+                NotifyContentType = NotifyContentType.SubscribeRequest
+            });
         }
     }
 }

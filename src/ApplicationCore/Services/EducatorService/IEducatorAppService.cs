@@ -13,6 +13,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
         Task<Educator> UpdateEducator(UpdateEducatorDto input);
         Task<List<EducatorDto>> GetEducatorByName(string educatorName);
         Task<EducatorDto> GetEducatorById(long educatorId);
-
+        Task HandleSubscribeTenant(SubscribeDto input);
     }
 }

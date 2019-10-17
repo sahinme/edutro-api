@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EgitimAPI.ApplicationCore.Services.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
 
@@ -59,6 +60,13 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                 throw;
             }
             
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddEducator(CreateTenantEducatorDto input)
+        {
+            await _tenantAppService.AddEducator(input);
+            return Ok();
         }
     }
 }

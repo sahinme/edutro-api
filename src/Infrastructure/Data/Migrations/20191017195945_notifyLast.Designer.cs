@@ -4,14 +4,16 @@ using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EgitimContext))]
-    partial class EgitimContextModelSnapshot : ModelSnapshot
+    [Migration("20191017195945_notifyLast")]
+    partial class notifyLast
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -371,8 +373,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<string>("Content");
 
-                    b.Property<long>("ContentId");
-
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("CreatorUserId");
@@ -384,8 +384,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     b.Property<string>("ModifiedBy");
 
                     b.Property<DateTime>("ModifiedDate");
-
-                    b.Property<int>("NotifyContentType");
 
                     b.Property<long>("OwnerId");
 
@@ -413,8 +411,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     b.Property<string>("CreatorUserId");
 
                     b.Property<long>("EducatorId");
-
-                    b.Property<bool>("IsAccepted");
 
                     b.Property<bool>("IsDeleted");
 

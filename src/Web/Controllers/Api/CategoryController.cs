@@ -3,12 +3,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService.Dto;
 
 namespace Microsoft.EgitimAPI.Web.Controllers.Api
 {
     public class CategoryController:BaseApiController
     {
         private readonly ICategoryAppService _categoryAppService;
+        
 
         public CategoryController(ICategoryAppService categoryAppService)
         {
@@ -45,5 +48,6 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                 throw;
             }
         }
+
     }
 }
