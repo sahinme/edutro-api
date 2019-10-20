@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -70,5 +71,12 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService
             
             await _givenCourseRepository.AddAsync(givenCourse);
         }
+
+        public async Task GetGiven()
+        {
+            var course = await _givenCourseRepository.GetAll().Where(x => x.CourseId == 3).ToListAsync();
+            Console.WriteLine(course);
+        }
+        
     }
 }

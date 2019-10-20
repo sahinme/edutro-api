@@ -39,7 +39,6 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             }
         }
         
-        [Authorize]
         [HttpGet]
         public  List<TenantDto> GetAll()
         {

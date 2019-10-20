@@ -9,5 +9,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService
         Task<List<GivenCourseDto>> GetAllGivenCourses();
 
         Task CreateGivenCourse(CreateGivenCourseDto input);
+        Task GetGiven();
     }
 }

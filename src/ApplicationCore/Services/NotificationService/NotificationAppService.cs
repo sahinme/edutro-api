@@ -28,7 +28,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService
                 SenderType = input.SenderType,
                 Title = input.Title,
                 ContentId = input.ContentId,
-                Content = input.Content
+                Content = input.Content,
+                NotifyContentType = input.NotifyContentType
             };
             await _notificationRepository.AddAsync(notify);
         }
@@ -41,7 +42,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService
                     Title = x.Title,
                     IsRead = x.IsRead,
                     Content = x.Content,
-                    ContentId = x.ContentId
+                    ContentId = x.ContentId,
+                    NotifyContentType = x.NotifyContentType
                 }).ToListAsync();
            
             return new PagedResultDto<NotificationDto>

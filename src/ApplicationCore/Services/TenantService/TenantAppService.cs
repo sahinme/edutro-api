@@ -65,7 +65,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                     LogoPath = x.LogoPath,
                     IsPremium = x.IsPremium,
                     Address = x.Address,
-                    TenantEducators = x.TenantEducators.Select(educator => new TenantEducatorDto
+                    TenantEducators = x.TenantEducators.Where(educator=>educator.IsAccepted).Select(educator => new TenantEducatorDto
                     {
                         EducatorId = educator.Educator.Id,
                         EducatorName = educator.Educator.Name+" "+educator.Educator.Surname,
@@ -98,7 +98,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
         
         public  List<TenantDto> GetAll()
         {
-            var model =  _tenantRepository.GetAll().Where(x=>x.IsDeleted==false)
+            var model =  _tenantRepository.GetAll()
                 .Include(x=>x.TenantEducators).ThenInclude(x=>x.Educator)
                 .Include(x=>x.GivenCourses).ThenInclude(x=>x.Course).ThenInclude(x=>x.Category)
                 .Include(x=>x.Comments)
@@ -112,7 +112,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                 LogoPath = x.LogoPath,
                 IsPremium = x.IsPremium,
                 Address = x.Address,
-                TenantEducators = x.TenantEducators.Select(educator => new TenantEducatorDto
+                TenantEducators = x.TenantEducators.Where(educator=>educator.IsAccepted).Select(educator => new TenantEducatorDto
                 {
                     EducatorId = educator.Educator.Id,
                     EducatorName = educator.Educator.Name+" "+educator.Educator.Surname,

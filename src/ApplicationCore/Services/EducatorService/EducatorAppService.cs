@@ -39,12 +39,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
             };
             await _educatorRepository.AddAsync(educator);
             
-            var tenantEducator = new TenantEducator
-            {
-                EducatorId = educator.Id,
-                TenantId = input.TenantId
-            };
-            await _tenantEducatorRepository.AddAsync(tenantEducator);
             return educator;
         }
 
@@ -62,7 +56,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                     Profession = x.Profession,
                     Resume = x.Resume,
                     Score = x.Score,
-                    EducatorTenants = x.EducatorTenants.Select(tenant => new EducatorTenantDto
+                    EducatorTenants = x.EducatorTenants.Where(tenant=>tenant.IsAccepted).Select(tenant => new EducatorTenantDto
                     {
                         TenantId = tenant.Tenant.Id,
                         TenantName = tenant.Tenant.TenantName
@@ -102,7 +96,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                     Profession = x.Profession,
                     Resume = x.Resume,
                     Score = x.Score,
-                    EducatorTenants = x.EducatorTenants.Select(tenant => new EducatorTenantDto
+                    EducatorTenants = x.EducatorTenants.Where(tenant=>tenant.IsAccepted).Select(tenant => new EducatorTenantDto
                     {
                         TenantId = tenant.Tenant.Id,
                         TenantName = tenant.Tenant.TenantName
@@ -141,7 +135,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                     Profession = x.Profession,
                     Resume = x.Resume,
                     Score = x.Score,
-                    EducatorTenants = x.EducatorTenants.Select(tenant => new EducatorTenantDto
+                    EducatorTenants = x.EducatorTenants.Where(tenant=>tenant.IsAccepted).Select(tenant => new EducatorTenantDto
                     {
                         TenantId = tenant.Tenant.Id,
                         TenantName = tenant.Tenant.TenantName

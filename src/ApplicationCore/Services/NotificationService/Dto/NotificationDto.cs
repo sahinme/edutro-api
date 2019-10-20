@@ -1,3 +1,5 @@
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
+
 namespace Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService.Dto
 {
     public class NotificationDto
@@ -6,5 +8,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService.Dto
         public long ContentId { get; set; }
         public string Content { get; set; }
         public bool IsRead { get; set; }
+        public NotifyContentType NotifyContentType { get; set; }
     }
 }

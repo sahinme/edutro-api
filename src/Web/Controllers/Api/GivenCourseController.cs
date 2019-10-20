@@ -20,7 +20,13 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         {
             return await _givenCourseAppService.GetAllGivenCourses();
         }
-        
+
+        [HttpGet]
+        public async Task getcourse()
+        {
+             await _givenCourseAppService.GetGiven();
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateGivenCourse(CreateGivenCourseDto input)
         {

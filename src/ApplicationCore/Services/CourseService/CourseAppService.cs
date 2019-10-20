@@ -72,18 +72,24 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
             var count = (input.TenantId.Length > input.EducatorId.Length)
                 ? input.TenantId.Length
                 : input.EducatorId.Length;
-            
-            for (var i = 0; i <count  ; i++)
-            {
-                var givenCourse = new GivenCourse
-                {
-                    CourseId = course.Id,
-                    EducatorId = input.EducatorId[i],
-                    TenantId = input.TenantId[i]
-                };
-                await _givenCourseRepository.AddAsync(givenCourse);
-            }
 
+                for (var i = 0; i <count; i++)
+                {
+                    var givenCourse = new GivenCourse
+                    {
+                        CourseId = course.Id,
+                    };
+                    if (input.TenantId.Length > i)
+                    {
+                        givenCourse.TenantId = input.TenantId[i];
+                    }
+
+                    if (input.EducatorId.Length > i)
+                    {
+                        givenCourse.EducatorId = input.EducatorId[i];
+                    }
+                    await _givenCourseRepository.AddAsync(givenCourse);
+                }
             return course;
         }
 
@@ -256,13 +262,13 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     DisplayName = x.Category.DisplayName,
                     ParentCategory = new ParentCategoryDto()
                 },
-                Tenants = x.Owners.Select(t => new CourseTenantDto
+                Tenants = x.Owners.Where(t=>t.TenantId!=null).Select(t => new CourseTenantDto
                 {
                     TenantId = t.Tenant.Id,
                     TenantName = t.Tenant.TenantName,
                     LogoPath = t.Tenant.LogoPath
                 }).ToList(),
-                Educators = x.Owners.Select(e=>new CourseEducatorDto
+                Educators = x.Owners.Where(e=>e.EducatorId!=null).Select(e=>new CourseEducatorDto
                 {
                     EducatorId = e.Educator.Id,
                     EducatorName=e.Educator.Name,
@@ -333,7 +339,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         {
             var isExistCourse = await _courseRepository.GetAll().AnyAsync(x => x.Id == input.Id);
                 if (!isExistCourse)
-                    throw new Exception("Dont exist this course!");
+                    throw new Exception("Bu kurs mevcut degil!");
 
             var course = await _courseRepository.GetAll().FirstAsync(x => x.Id == input.Id);
 
@@ -348,6 +354,57 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
 
             await _courseRepository.UpdateAsync(course);
 
+            var givenCourses = await _givenCourseRepository.GetAll().Where(x => x.CourseId == input.Id).ToListAsync();
+            var count = (input.TenantId.Length > input.EducatorId.Length)
+                ? input.TenantId.Length
+                : input.EducatorId.Length;
+
+            var loopCount = givenCourses.Count > count ? givenCourses.Count : count;  
+            
+            for (int i = 0; i <= loopCount; i++)
+            {
+                if (givenCourses.Count > i)
+                {
+                    if (input.TenantId.Length > i)
+                    {
+                        givenCourses[i].TenantId = input.TenantId[i];
+                    }
+                    else
+                    {
+                        if (givenCourses[i].TenantId.HasValue) givenCourses[i].TenantId = null;
+                    }
+
+                    if (input.EducatorId.Length > i)
+                    {
+                        givenCourses[i].EducatorId = input.EducatorId[i];
+                    }
+                    else
+                    {
+                        if (givenCourses[i].EducatorId.HasValue) givenCourses[i].EducatorId = null;
+                    }
+                    await _givenCourseRepository.UpdateAsync(givenCourses[i]);
+
+                    if (givenCourses[i].TenantId != null || givenCourses[i].EducatorId != null) continue;
+                    await _givenCourseRepository.DeleteAsync(givenCourses[i]);
+                }
+                else if(input.TenantId.Length > i || input.EducatorId.Length > i)
+                {
+                    var givenCourse = new GivenCourse
+                    {
+                        CourseId = course.Id,
+                    };
+                    if (input.TenantId.Length > i)
+                    {
+                        givenCourse.TenantId = input.TenantId[i];
+                    }
+
+                    if (input.EducatorId.Length > i)
+                    {
+                        givenCourse.EducatorId = input.EducatorId[i];
+                    }
+                    await _givenCourseRepository.AddAsync(givenCourse);
+                }
+            }
         }
 
         public async Task<PagedResultDto<CourseDto>> GetAllCourses()
