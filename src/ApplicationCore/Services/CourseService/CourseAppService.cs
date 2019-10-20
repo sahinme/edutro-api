@@ -361,8 +361,11 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
 
             var loopCount = givenCourses.Count > count ? givenCourses.Count : count;  
             
-            for (int i = 0; i <= loopCount; i++)
-            {
+            for (var i = 0; i <= loopCount; i++)
+            { 
+                // db deki her column tenantId educatorId degerini sirayla gunceller.Inputta karsiligi yoksa null degeri atar.
+                // en son ikiside null ise egitmen ve kurum sayisi azalmistir. Columnu siler.  
+                
                 if (givenCourses.Count > i)
                 {
                     if (input.TenantId.Length > i)
@@ -387,6 +390,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     if (givenCourses[i].TenantId != null || givenCourses[i].EducatorId != null) continue;
                     await _givenCourseRepository.DeleteAsync(givenCourses[i]);
                 }
+                // tablodaki data input dan az ise geri kalanlari db ye ekler. Fazladan egitmen yada kurum eklenmistir.
+                
                 else if(input.TenantId.Length > i || input.EducatorId.Length > i)
                 {
                     var givenCourse = new GivenCourse
