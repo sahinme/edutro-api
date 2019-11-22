@@ -2,6 +2,7 @@
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Categories;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Comments;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Editions;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Events;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
@@ -14,7 +15,7 @@ using Newtonsoft.Json;
 namespace Microsoft.EgitimAPI.Infrastructure.Data
 {
 
-    //dotnet ef migrations add notify-json --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
+    //dotnet ef migrations add Editions --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
 
     public class EgitimContext : DbContext
     {
@@ -50,6 +51,8 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
 
         public DbSet<Notification> Notifications { get; set; }
 
+        public DbSet<Edition> Editions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             
@@ -82,6 +85,7 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
                 .HasForeignKey(ec => ec.EntityId);
 
             #endregion
+            
         }
         
     }

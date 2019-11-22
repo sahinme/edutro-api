@@ -436,13 +436,13 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                         DisplayName = x.Category.DisplayName,
                         ParentCategory = new ParentCategoryDto()
                     },
-                    Tenants = x.Owners.Select(t => new CourseTenantDto
+                    Tenants = x.Owners.Where(t=>t.TenantId!=null).Select(t => new CourseTenantDto
                     {
                         TenantId = t.Tenant.Id,
                         TenantName = t.Tenant.TenantName,
                         LogoPath = t.Tenant.LogoPath
                     }).ToList(),
-                    Educators = x.Owners.Select(e=>new CourseEducatorDto
+                    Educators = x.Owners.Where(e=>e.EducatorId!=null).Select(e=>new CourseEducatorDto
                     {
                         EducatorId = e.Educator.Id,
                         EducatorName=e.Educator.Name,

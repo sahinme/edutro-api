@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Comments;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Editions;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Events;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
@@ -19,6 +20,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants
         public string PhoneNumber { get; set; }
         public string PhoneNumber2 { get; set; }
         public string LogoPath { get; set; }
+        public long? EditionId { get; set; }
+        [ForeignKey(nameof(EditionId))]
+        public  Edition Edition { get; set; }   
         public IList<TenantEducator.TenantEducator> TenantEducators { get; set; }
         public  IList<GivenCourse> GivenCourses { get; set; }
         

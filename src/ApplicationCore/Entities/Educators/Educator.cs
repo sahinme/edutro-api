@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Comments;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Editions;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Events;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
@@ -21,6 +22,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Educators
         public string ProfileImagePath { get; set; }
         [DefaultValue(false)]
         public bool IsPremium { get; set; }
+        public long? EditionId { get; set; }
+        [ForeignKey(nameof(EditionId))]
+        public  Edition Edition { get; set; }   
         public IList<TenantEducator.TenantEducator> EducatorTenants { get; set; }
         public virtual IList<GivenCourse> GivenCourses { get; set; }
         public  IList<GivenEvent> GivenEvents { get; set; }

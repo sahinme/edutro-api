@@ -37,6 +37,10 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                 Profession = input.Profession,
                 Resume = input.Resume,
             };
+            if (input.EditionId!=null)
+            {
+                educator.EditionId = input.EditionId;
+            }
             await _educatorRepository.AddAsync(educator);
             
             return educator;
@@ -47,6 +51,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
             var educators = await _educatorRepository.GetAll().Where(x=>x.IsDeleted==false)
                 .Include(x=>x.EducatorTenants)
                 .ThenInclude(x=>x.Tenant)
+                .Include(x=>x.Edition)
                 .Include(x=>x.GivenCourses).ThenInclude(x=>x.Course)
                 .Select(x => new EducatorDto
                 {
@@ -76,7 +81,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                             Id = course.Course.Category.Id,
                             Description = course.Course.Category.Description,
                         }
-                    }).ToList()
+                    }).ToList(),
                 }).ToListAsync();
             return educators;
         }

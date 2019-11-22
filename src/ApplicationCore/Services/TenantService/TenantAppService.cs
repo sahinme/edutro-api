@@ -47,6 +47,10 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                 PhoneNumber2 = input.PhoneNumber2,
                 Password = input.Password
             };
+            if (input.EditionId!=null)
+            {
+                user.EditionId = input.EditionId;
+            }
             await _tenantRepository.AddAsync(user);
         }
 
