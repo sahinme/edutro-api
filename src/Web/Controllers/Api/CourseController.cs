@@ -90,6 +90,13 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             return Ok(result);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCourseById(long id)
+        {
+            var result = await _courseAppService.GetCourseById(id);
+            return Ok(result);
+        }
+
         [HttpDelete]
         public async Task DeleteCourse(long courseId)
         {

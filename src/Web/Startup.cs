@@ -53,25 +53,9 @@ namespace Microsoft.eShopWeb.Web
 
         public void ConfigureDevelopmentServices(IServiceCollection services)
         {
-            // use in-memory database
-           // ConfigureInMemoryDatabases(services);
-
-            // use real database
+         
             ConfigureProductionServices(services);
         }
-
-//        private void ConfigureInMemoryDatabases(IServiceCollection services)
-//        {
-//            // use in-memory database
-//            services.AddDbContext<CatalogContext>(c =>
-//                c.UseInMemoryDatabase("Catalog"));
-//
-////            // Add Identity DbContext
-////            services.AddDbContext<AppIdentityDbContext>(options =>
-////                options.UseInMemoryDatabase("Identity"));
-//
-//            ConfigureServices(services);
-//        }
 
         public void ConfigureProductionServices(IServiceCollection services)
         {
@@ -145,7 +129,7 @@ namespace Microsoft.eShopWeb.Web
             });
             
             services.AddCors(); 
-
+            services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));
             services.AddMvc(options =>
             {
                 options.Conventions.Add(new RouteTokenTransformerConvention(
