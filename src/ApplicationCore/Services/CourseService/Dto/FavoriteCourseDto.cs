@@ -6,6 +6,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
     {
         public long CourseId { get; set; }
         public string CourseName { get; set; }
+        public string LocationName { get; set; }
         public List<CourseTenantDto> Tenants { get; set; }
         public List<CourseEducatorDto> Educators { get; set; }
         

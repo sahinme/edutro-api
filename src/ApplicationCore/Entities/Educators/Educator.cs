@@ -22,9 +22,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Educators
         public string ProfileImagePath { get; set; }
         [DefaultValue(false)]
         public bool IsPremium { get; set; }
-        public long? EditionId { get; set; }
-        [ForeignKey(nameof(EditionId))]
-        public  Edition Edition { get; set; }   
         public IList<TenantEducator.TenantEducator> EducatorTenants { get; set; }
         public virtual IList<GivenCourse> GivenCourses { get; set; }
         public  IList<GivenEvent> GivenEvents { get; set; }

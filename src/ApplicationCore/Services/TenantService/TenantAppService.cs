@@ -37,7 +37,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
         
         public async Task CreateTenant(CreateTenantDto input)
         {
-            //var user = _mapper.Map<Tenant>(input);  
             var user = new Tenant
             {
                 TenantName = input.TenantName,
@@ -45,12 +44,12 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                 IsPremium = input.IsPremium,
                 PhoneNumber = input.PhoneNumber,
                 PhoneNumber2 = input.PhoneNumber2,
-                Password = input.Password
+                Password = input.Password,
+                AboutUs = input.AboutUs,
+                Title = input.Title,
+                LocationId = input.LocationId,
+                LogoPath = input.LogoPath
             };
-            if (input.EditionId!=null)
-            {
-                user.EditionId = input.EditionId;
-            }
             await _tenantRepository.AddAsync(user);
         }
 
@@ -59,6 +58,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
             var result = await _tenantRepository.GetAll()
                 .Include(x=>x.TenantEducators).ThenInclude(x=>x.Educator)
                 .Include(x=>x.GivenCourses).ThenInclude(x=>x.Course).ThenInclude(x=>x.Category)
+                .Include(x=>x.Location)
                 .Include(x=>x.Comments).Select(x => new TenantDto
                 {
                     Id = x.Id,
@@ -68,7 +68,11 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                     PhoneNumber2 = x.PhoneNumber2,
                     LogoPath = x.LogoPath,
                     IsPremium = x.IsPremium,
+                    Title = x.Title,
+                    AboutUs = x.AboutUs,
                     Address = x.Address,
+                    
+                    LocationName = x.Location.Name,
                     TenantEducators = x.TenantEducators.Where(educator=>educator.IsAccepted).Select(educator => new TenantEducatorDto
                     {
                         EducatorId = educator.Educator.Id,
@@ -106,13 +110,17 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                 .Include(x=>x.TenantEducators).ThenInclude(x=>x.Educator)
                 .Include(x=>x.GivenCourses).ThenInclude(x=>x.Course).ThenInclude(x=>x.Category)
                 .Include(x=>x.Comments)
+                .Include(x=>x.Location)
                 .Where(x => x.IsDeleted == false).Select(x => new TenantDto
             {
                 Id = x.Id,
                 TenantName = x.TenantName,
                 Score = x.Score,
                 PhoneNumber = x.PhoneNumber,
+                LocationName = x.Location.Name,
                 PhoneNumber2 = x.PhoneNumber2,
+                Title = x.Title,
+                AboutUs = x.AboutUs,
                 LogoPath = x.LogoPath,
                 IsPremium = x.IsPremium,
                 Address = x.Address,

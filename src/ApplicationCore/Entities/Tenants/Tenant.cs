@@ -5,6 +5,7 @@ using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Editions;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Events;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Locations;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
@@ -16,13 +17,15 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants
         public string Password { get; set; }
         public float Score { get; set; }
         public string TenantName { get; set; }
+        public string AboutUs { get; set; }
+        public string Title { get; set; }
         public string Address { get; set; }
+        public long LocationId { get; set; }
         public string PhoneNumber { get; set; }
         public string PhoneNumber2 { get; set; }
         public string LogoPath { get; set; }
-        public long? EditionId { get; set; }
-        [ForeignKey(nameof(EditionId))]
-        public  Edition Edition { get; set; }   
+        [ForeignKey(nameof(LocationId))]
+        public virtual Location Location { get; set; }     
         public IList<TenantEducator.TenantEducator> TenantEducators { get; set; }
         public  IList<GivenCourse> GivenCourses { get; set; }
         

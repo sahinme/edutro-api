@@ -16,7 +16,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         Task DeleteCourse(long id);
         Task UpdateCourse(UpdateCourseDto course);
         Task<PagedResultDto<CourseDto>> GetAllCourses();
-        Task<List<AdvertisingCourseDto>> GetAllAdvertisingCourses();
+        Task<CourseDto> GetCourseById(long id);
+        Task<PagedResultDto<AdvertisingCourseDto>> GetAllAdvertisingCourses();
         Task<Course> CreateAdvertisingCourse(CreateAdvertisingCourseDto input);
         Task AddFavoriteCourse(CreateFavoriteCourseDto input);
         Task<PagedResultDto<FavoriteCourseDto>> GetFavoriteCourses(long userId);

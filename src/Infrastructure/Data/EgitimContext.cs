@@ -5,6 +5,7 @@ using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Editions;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Events;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Locations;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
@@ -15,7 +16,7 @@ using Newtonsoft.Json;
 namespace Microsoft.EgitimAPI.Infrastructure.Data
 {
 
-    //dotnet ef migrations add Editions --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
+    //dotnet ef migrations add course-entity --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
 
     public class EgitimContext : DbContext
     {
@@ -44,6 +45,7 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
         public DbSet<Comment> Comments { get; set; }
         
         public DbSet<Event> Events { get; set; }
+        public DbSet<Location> Locations { get; set; }
 
         public DbSet<GivenEvent> GivenEvents { get; set; }
 

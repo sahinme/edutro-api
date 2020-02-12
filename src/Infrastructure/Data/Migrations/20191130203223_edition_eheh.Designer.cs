@@ -4,14 +4,16 @@ using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EgitimContext))]
-    partial class EgitimContextModelSnapshot : ModelSnapshot
+    [Migration("20191130203223_edition_eheh")]
+    partial class edition_eheh
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,10 +136,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<long>("CategoryId");
 
-                    b.Property<bool>("Certificate");
-
-                    b.Property<bool>("CertificateOfParticipation");
-
                     b.Property<long?>("CourseContentId");
 
                     b.Property<DateTime>("CreatedDate");
@@ -146,13 +144,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<decimal>("DiscountPrice");
-
-                    b.Property<string>("Duration");
-
                     b.Property<DateTime?>("EndDate");
-
-                    b.Property<string>("ImagePath");
 
                     b.Property<bool>("IsDeleted");
 
@@ -162,8 +154,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("ModifiedDate");
 
-                    b.Property<bool>("OnlineVideo");
-
                     b.Property<long>("OwnerId");
 
                     b.Property<string>("OwnerType");
@@ -172,13 +162,9 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<int>("Quota");
 
-                    b.Property<string>("Requirements");
-
                     b.Property<float>("Score");
 
                     b.Property<DateTime?>("StartDate");
-
-                    b.Property<string>("Teachings");
 
                     b.Property<string>("Title");
 

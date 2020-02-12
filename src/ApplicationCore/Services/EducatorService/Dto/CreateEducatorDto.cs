@@ -7,6 +7,5 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto
         public string Profession { get; set; }
         //Kisa ozgecmis bilgileri
         public string Resume { get; set; }
-        public long? EditionId { get; set; }
     }
 }

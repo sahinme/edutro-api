@@ -17,8 +17,9 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpPost]
-        public async Task<IActionResult> CreateCourse(CreateCourseDto input)
+        public async Task<IActionResult> CreateCourse([FromForm] CreateCourseDto input)
         {
+            
             try
             {
                 var course =  await _courseAppService.CreateCourse(input);

@@ -10,12 +10,17 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EventService.Dto
         public string Description { get; set; }
         
         public int Quota { get; set; }
+
+        public string Address { get; set; }
+
+        public long LocationId { get; set; }
+        public long OwnerId { get; set; }
+        public string OwnerType { get; set; }
         
         public double Price { get; set; }
         
         public DateTime? StartDate { get; set; }
 
-        public string Location { get; set; }
         public DateTime? EndDate { get; set; }
 
         public EventType EventType { get; set; }

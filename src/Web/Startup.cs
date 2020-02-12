@@ -23,6 +23,7 @@ using Microsoft.EgitimAPI;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.EmailSettings;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services;
+using Microsoft.EgitimAPI.ApplicationCore.Services.BlobService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CategoryService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CommentService;
@@ -93,6 +94,7 @@ namespace Microsoft.eShopWeb.Web
             services.AddScoped<ICommentAppService, CommentAppService>();
             services.AddScoped<INotificationAppService, NotificationAppService>();
             services.AddScoped<ICheckEdition, CheckEdition>();
+            services.AddScoped<IBlobService, BlobService>();
             services.Configure<CatalogSettings>(Configuration);
             services.AddSingleton<IUriComposer>(new UriComposer(Configuration.Get<CatalogSettings>()));
 

@@ -34,8 +34,11 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EventService
                 StartDate = input.StartDate,
                 EndDate = input.EndDate,
                 CategoryId = input.CategoryId,
-                Location = input.Location,
-                EventType = input.EventType
+                Address = input.Address,
+                LocationId = input.LocationId,
+                EventType = input.EventType,
+                OwnerId = input.OwnerId,
+                OwnerType = input.OwnerType
             };
 
             await _eventRepository.AddAsync(model);
@@ -44,22 +47,31 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EventService
                 ? input.TenantId.Length
                 : input.EducatorId.Length;
             
-            for (var i = 0; i <count  ; i++)
+            for (var i = 0; i <count; i++)
             {
                 var givenEvent = new GivenEvent
                 {
                     EventId = model.Id,
-                    EducatorId = input.EducatorId[i],
-                    TenantId = input.TenantId[i]
                 };
+                if (input.TenantId.Length > i)
+                {
+                    givenEvent.TenantId = input.TenantId[i];
+                }
+
+                if (input.EducatorId.Length > i)
+                {
+                    givenEvent.EducatorId = input.EducatorId[i];
+                }
                 await _givenEventRepository.AddAsync(givenEvent);
             }
+            
             return model;
         }
 
         public async Task<List<EventDto>> GetEventsByName(string courseName)
         {
             var events = await _eventRepository.GetAll().Include(x=>x.Category)
+                .Include(x=>x.Location)
                 .Include(x => x.Owners).ThenInclude(x => x.Tenant)
                 .Include(x=>x.Owners).ThenInclude(x=>x.Educator)
                 .Where(x => x.Title.Contains(courseName) || x.Description.Contains(courseName))
@@ -72,8 +84,10 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EventService
                     Price = x.Price,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
-                    Location = x.Location,
+                    Address = x.Address,
                     EventType = x.EventType,
+                    LocationName = x.Location.Name,
+                    OwnerType = x.OwnerType,
                     Category = new CategoryDto
                     {
                         Id = x.Category.Id,
@@ -93,7 +107,19 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EventService
                         EducatorName=e.Educator.Name,
                         Profession = e.Educator.Profession,
                         ProfileImgPath = e.Educator.ProfileImagePath
-                    }).ToList()
+                    }).ToList(),
+                    OwnerInfo = x.OwnerType=="Tenant" ? x.Owners.Where(p=>p.Tenant.Id==x.OwnerId).Select(p=>new OwnerInfo
+                    {
+                        Id = p.Tenant.Id,
+                        Name = p.Tenant.TenantName,
+                        Profession = null
+                    }).ToList() : 
+                         x.Owners.Where(a=>a.Educator.Id==x.OwnerId).Select(a=>new OwnerInfo
+                        {
+                            Id = a.Educator.Id,
+                            Name = a.Educator.Name + " "+ a.Educator.Surname,
+                            Profession = a.Educator.Profession
+                        }).ToList()
                 }).ToListAsync();
             return events;
         }
@@ -101,6 +127,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EventService
         public async Task<List<EventDto>> GetEventsByCategory(long categoryId)
         {
             var events = await _eventRepository.GetAll().Include(x=>x.Category)
+                .Include(x=>x.Location)
                 .Include(x => x.Owners).ThenInclude(x => x.Tenant)
                 .Include(x=>x.Owners).ThenInclude(x=>x.Educator)
                 .Where(x => x.CategoryId==categoryId)
@@ -113,8 +140,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EventService
                     Price = x.Price,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
-                    Location = x.Location,
+                    Address = x.Address,
                     EventType = x.EventType,
+                    LocationName = x.Location.Name,
                     Category = new CategoryDto
                     {
                         Id = x.Category.Id,
@@ -134,7 +162,19 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EventService
                         EducatorName=e.Educator.Name,
                         Profession = e.Educator.Profession,
                         ProfileImgPath = e.Educator.ProfileImagePath
-                    }).ToList()
+                    }).ToList(),
+                    OwnerInfo = x.OwnerType=="Tenant" ? x.Owners.Where(p=>p.Tenant.Id==x.OwnerId).Select(p=>new OwnerInfo
+                        {
+                            Id = p.Tenant.Id,
+                            Name = p.Tenant.TenantName,
+                            Profession = null
+                        }).ToList() : 
+                        x.Owners.Where(a=>a.Educator.Id==x.OwnerId).Select(a=>new OwnerInfo
+                        {
+                            Id = a.Educator.Id,
+                            Name = a.Educator.Name + " "+ a.Educator.Surname,
+                            Profession = a.Educator.Profession
+                        }).ToList()
                 }).ToListAsync();
             return events;
         }
@@ -149,6 +189,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EventService
         public async Task<List<EventDto>> GetAllEvents()
         {
             var events = await _eventRepository.GetAll().Include(x=>x.Category)
+                .Include(x=>x.Location)
                 .Include(x => x.Owners).ThenInclude(x => x.Tenant)
                 .Include(x=>x.Owners).ThenInclude(x=>x.Educator)
                 .Select(x => new EventDto
@@ -160,8 +201,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EventService
                     Price = x.Price,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
-                    Location = x.Location,
+                    Address = x.Address,
                     EventType = x.EventType,
+                    LocationName = x.Location.Name,
                     Category = new CategoryDto
                     {
                         Id = x.Category.Id,
@@ -181,7 +223,21 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EventService
                         EducatorName=e.Educator.Name,
                         Profession = e.Educator.Profession,
                         ProfileImgPath = e.Educator.ProfileImagePath
-                    }).ToList()
+                    }).ToList(),
+                    OwnerInfo = x.OwnerType=="Tenant" ? x.Owners.Where(p=>p.Tenant.Id==x.OwnerId).Select(p=>new OwnerInfo
+                        {
+                            Id = p.Tenant.Id,
+                            Name = p.Tenant.TenantName,
+                            Profession = null,
+                            LogoPath = p.Tenant.LogoPath
+                        }).ToList() : 
+                        x.Owners.Where(a=>a.Educator.Id==x.OwnerId).Select(a=>new OwnerInfo
+                        {
+                            Id = a.Educator.Id,
+                            Name = a.Educator.Name + " "+ a.Educator.Surname,
+                            Profession = a.Educator.Profession,
+                            LogoPath = a.Educator.ProfileImagePath
+                        }).ToList()
                 }).ToListAsync();
             return events;
         }

@@ -6,6 +6,7 @@ using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
+using Microsoft.EgitimAPI.ApplicationCore.Services.BlobService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Dto;
@@ -24,12 +25,14 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         private readonly IAsyncRepository<AdvertisingCourse> _advertisingCourseRepository;
         private readonly IAsyncRepository<FavoriteCourse> _favoriteCourseRepository;
         private readonly ICheckEdition _checkEdition;
+        private readonly IBlobService _blobService;
 
         public CourseAppService(IAsyncRepository<Course> courseRepository,
             IAsyncRepository<GivenCourse> givenCourseRepository,
             IAsyncRepository<AdvertisingCourse> advertisingCourseRepository,
             IAsyncRepository<FavoriteCourse> favoriteCourseRepository,
-                ICheckEdition checkEdition
+                ICheckEdition checkEdition,
+            IBlobService blobService
             )
         {
             _courseRepository = courseRepository;
@@ -37,6 +40,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
             _advertisingCourseRepository = advertisingCourseRepository;
             _favoriteCourseRepository = favoriteCourseRepository;
             _checkEdition = checkEdition;
+            _blobService = blobService;
         }
         public async Task<Course> CreateCourse(CreateCourseDto input)
         {
@@ -57,16 +61,31 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     throw new Exception("No right to create course tenant !");
                 }
             }
+
+            var imagePath = await _blobService.InsertFile(input.File);
             var course = new Course
             {
                 Title = input.Title,
                 Description = input.Description,
                 Quota = input.Quota,
+                Address = input.Address,
+                OnlineVideo = input.OnlineVideo,
+                Certificate = input.Certificate,
+                CertificateOfParticipation = input.CertificateOfParticipation,
+                Duration = input.Duration,
+                Requirements = input.Requirements,
+                Teachings = input.Teachings,
                 Price = input.Price,
+                DiscountPrice = input.DiscountPrice,
                 StartDate = input.StartDate,
                 EndDate = input.EndDate,
                 CategoryId = input.CategoryId,
+                LocationId = input.LocationId,
+                OwnerType = input.OwnerType,
+                OwnerId = input.OwnerId,
+                ImagePath = imagePath
             };
+            
             await _courseRepository.AddAsync(course);
 
             var count = (input.TenantId.Length > input.EducatorId.Length)
@@ -93,13 +112,80 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
             return course;
         }
 
-        public async Task<List<AdvertisingCourseDto>> GetAllAdvertisingCourses()
+        public async Task<CourseDto> GetCourseById(long id)
+        {
+            var isExsist = await _courseRepository.GetByIdAsync(id);
+            if(isExsist==null) throw new Exception("There is no course with this id");
+            
+            var course = await _courseRepository.GetAll().Where(x=>x.Id==id).Include(x=>x.Category)
+                .Include(x=>x.Location)
+                .Include(x => x.Owners).ThenInclude(x => x.Tenant)
+                .Include(x=>x.Owners).ThenInclude(x=>x.Educator)
+                .Select(x => new CourseDto
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Description = x.Description,
+                Quota = x.Quota,
+                Price = x.Price,
+                StartDate = x.StartDate,
+                Address = x.Address,
+                OnlineVideo = x.OnlineVideo,
+                Certificate = x.Certificate,
+                CertificateOfParticipation = x.CertificateOfParticipation,
+                Duration = x.Duration,
+                Requirements = x.Requirements,
+                Teachings = x.Teachings,
+                DiscountPrice = x.DiscountPrice,
+                EndDate = x.EndDate,
+                Score = x.Score,
+                LocationName = x.Location.Name,
+                Category = new CategoryDto
+                {
+                    Id = x.Category.Id,
+                    Description = x.Category.Description,
+                    DisplayName = x.Category.DisplayName,
+                    ParentCategory = new ParentCategoryDto()
+                },
+                Tenants = x.Owners.Where(t=>t.TenantId!=null).Select(t => new CourseTenantDto
+                {
+                    TenantId = t.Tenant.Id,
+                    TenantName = t.Tenant.TenantName,
+                    LogoPath = t.Tenant.LogoPath
+                }).ToList(),
+                Educators = x.Owners.Where(e=>e.EducatorId!=null).Select(e=>new CourseEducatorDto
+                {
+                    EducatorId = e.Educator.Id,
+                    EducatorName=e.Educator.Name,
+                    Profession = e.Educator.Profession,
+                    ProfileImgPath = e.Educator.ProfileImagePath
+                }).ToList(),
+                CourseOwnerInfo = x.OwnerType=="Tenant" ? x.Owners.Where(p=>p.Tenant.Id==x.OwnerId).Select(p=>new CourseOwnerInfo
+                    {
+                        Id = p.Tenant.Id,
+                        Name = p.Tenant.TenantName,
+                        Profession = null,
+                        LogoPath = p.Tenant.LogoPath
+                    }).ToList() : 
+                    x.Owners.Where(a=>a.Educator.Id==x.OwnerId).Select(a=>new CourseOwnerInfo
+                    {
+                        Id = a.Educator.Id,
+                        Name = a.Educator.Name + " "+ a.Educator.Surname,
+                        Profession = a.Educator.Profession,
+                        LogoPath = a.Educator.ProfileImagePath
+                    }).ToList()
+            }).FirstOrDefaultAsync();
+            return course;
+        }
+
+        public async Task<PagedResultDto<AdvertisingCourseDto>> GetAllAdvertisingCourses()
         {
             var courses = await _advertisingCourseRepository.GetAll().Include(x => x.Course)
                 .ThenInclude(x => x.Owners).ThenInclude(x => x.Tenant)
                 .Include(x => x.Course)
                 .ThenInclude(x => x.Owners).ThenInclude(x => x.Educator)
                 .Include(x => x.Course).ThenInclude(x => x.Category)
+                .Include(x=>x.Course).ThenInclude(x=>x.LocationId)
                 .Include(x => x.Tenant)
                 .Include(x => x.Educator)
                 .Where(x=>x.IsEnded==false && x.Course.AdvertisingState!=AdvertisingState.Stopped)
@@ -114,7 +200,22 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                         Price = x.Course.Price,
                         StartDate = x.Course.StartDate,
                         EndDate = x.Course.EndDate,
+                        CourseOwnerInfo = x.Course.OwnerType=="Tenant" ? x.Course.Owners.Where(p=>p.Tenant.Id==x.Course.OwnerId).Select(p=>new CourseOwnerInfo
+                            {
+                                Id = p.Tenant.Id,
+                                Name = p.Tenant.TenantName,
+                                Profession = null,
+                                LogoPath = p.Tenant.LogoPath
+                            }).ToList() : 
+                            x.Course.Owners.Where(a=>a.Educator.Id==x.Course.OwnerId).Select(a=>new CourseOwnerInfo
+                            {
+                                Id = a.Educator.Id,
+                                Name = a.Educator.Name + " "+ a.Educator.Surname,
+                                Profession = a.Educator.Profession,
+                                LogoPath = a.Educator.ProfileImagePath
+                            }).ToList(),
                         Score = x.Course.Score,
+                        LocationName = x.Course.Location.Name,
                         Category = new CategoryDto
                         {
                             Id = x.Course.Category.Id,
@@ -136,26 +237,18 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                             ProfileImgPath = e.Educator.ProfileImagePath
                         }).ToList(),
                     },
-                    OwnerEducator = new CourseEducatorDto
-                    {
-                        EducatorId = x.Educator.Id,
-                        EducatorName = x.Educator.Name + " " + x.Educator.Surname,
-                        Profession = x.Educator.Profession,
-                        ProfileImgPath = x.Educator.ProfileImagePath
-                    },
-                    OwnerTenant = new CourseTenantDto
-                    {
-                        TenantId = x.Tenant.Id,
-                        TenantName = x.Tenant.TenantName,
-                        LogoPath = x.Tenant.LogoPath
-                    }
+                    
                 }).ToListAsync();
-            return courses;
+            var result = new PagedResultDto<AdvertisingCourseDto>
+            {
+                Results = courses,
+                Count = courses.Count
+            };
+            return result;
         }
 
         public async Task<Course> CreateAdvertisingCourse(CreateAdvertisingCourseDto input)
         {
-         
             var course = new Course
             {
                 Title = input.Title,
@@ -165,6 +258,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 StartDate = input.StartDate,
                 EndDate = input.EndDate,
                 CategoryId = input.CategoryId,
+                LocationId = input.LocationId,
+                OwnerType = input.OwnerType,
+                OwnerId = input.OwnerId,
                 AdvertisingState = AdvertisingState.Continues
             };
             await _courseRepository.AddAsync(course);
@@ -173,7 +269,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 ? input.TenantId.Length
                 : input.EducatorId.Length;
             
-            for (var i = 0; i <count  ; i++)
+            for (var i = 0; i < count  ; i++)
             {
                 var givenCourse = new GivenCourse
                 {
@@ -213,11 +309,13 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
             var courses = await _favoriteCourseRepository.GetAll().Where(x => x.UserId == userId)
                 .Include(x => x.Course)
                 .ThenInclude(x => x.Owners).ThenInclude(x => x.Educator)
+                .Include(x=>x.Course).ThenInclude(x=>x.Location)
                 .Include(x => x.User)
                 .Select(x => new FavoriteCourseDto
                 {
                     CourseId = x.Course.Id,
                     CourseName = x.Course.Title,
+                    LocationName = x.Course.Location.Name,
                     Tenants = x.Course.Owners.Select(t=> new CourseTenantDto
                     {
                         TenantId = t.Tenant.Id,
@@ -230,7 +328,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                         EducatorName=e.Educator.Name,
                         Profession = e.Educator.Profession,
                         ProfileImgPath = e.Educator.ProfileImagePath
-                    }).ToList()
+                    }).ToList(),
                 }).ToListAsync();
             return new PagedResultDto<FavoriteCourseDto>
             {
@@ -242,6 +340,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         public async Task<PagedResultDto<CourseDto>> GetCoursesByName(string courseName)
         {
             var courses = await _courseRepository.GetAll().Include(x=>x.Category)
+                .Include(x=>x.Location)
                 .Include(x => x.Owners).ThenInclude(x => x.Tenant)
                 .Include(x=>x.Owners).ThenInclude(x=>x.Educator)
                 .Where(x => x.Title.Contains(courseName) || x.Description.Contains(courseName))
@@ -254,7 +353,16 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 Price = x.Price,
                 StartDate = x.StartDate,
                 EndDate = x.EndDate,
+                Address = x.Address,
+                OnlineVideo = x.OnlineVideo,
+                Certificate = x.Certificate,
+                CertificateOfParticipation = x.CertificateOfParticipation,
+                Duration = x.Duration,
+                Requirements = x.Requirements,
+                Teachings = x.Teachings,
+                DiscountPrice = x.DiscountPrice,
                 Score = x.Score,
+                LocationName = x.Location.Name,
                 Category = new CategoryDto
                 {
                     Id = x.Category.Id,
@@ -274,7 +382,21 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     EducatorName=e.Educator.Name,
                     Profession = e.Educator.Profession,
                     ProfileImgPath = e.Educator.ProfileImagePath
-                }).ToList()
+                }).ToList(),
+                CourseOwnerInfo = x.OwnerType=="Tenant" ? x.Owners.Where(p=>p.Tenant.Id==x.OwnerId).Select(p=>new CourseOwnerInfo
+                    {
+                        Id = p.Tenant.Id,
+                        Name = p.Tenant.TenantName,
+                        Profession = null,
+                        LogoPath = p.Tenant.LogoPath
+                    }).ToList() : 
+                    x.Owners.Where(a=>a.Educator.Id==x.OwnerId).Select(a=>new CourseOwnerInfo
+                    {
+                        Id = a.Educator.Id,
+                        Name = a.Educator.Name + " "+ a.Educator.Surname,
+                        Profession = a.Educator.Profession,
+                        LogoPath = a.Educator.ProfileImagePath
+                    }).ToList()
             }).ToListAsync();
             var result = new PagedResultDto<CourseDto>
             {
@@ -287,6 +409,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         public async Task<PagedResultDto<CourseDto>> GetCoursesByCategory(long categoryId)
         {
             var courses = await _courseRepository.GetAll().Include(x => x.Category)
+                .Include(x=>x.Location)
                 .Include(x => x.Owners).ThenInclude(x => x.Tenant)
                 .Include(x=>x.Owners).ThenInclude(x=>x.Educator)
                 .Where(x => x.Category.Id == categoryId).Select(x => new CourseDto
@@ -297,8 +420,17 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     Quota = x.Quota,
                     Price = x.Price,
                     StartDate = x.StartDate,
+                    Address = x.Address,
+                    OnlineVideo = x.OnlineVideo,
+                    Certificate = x.Certificate,
+                    CertificateOfParticipation = x.CertificateOfParticipation,
+                    Duration = x.Duration,
+                    Requirements = x.Requirements,
+                    Teachings = x.Teachings,
+                    DiscountPrice = x.DiscountPrice,
                     EndDate = x.EndDate,
                     Score = x.Score,
+                    LocationName = x.Location.Name,
                     Category = new CategoryDto
                     {
                         Id = x.Category.Id,
@@ -318,7 +450,21 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                         EducatorName=e.Educator.Name,
                         Profession = e.Educator.Profession,
                         ProfileImgPath = e.Educator.ProfileImagePath
-                    }).ToList()
+                    }).ToList(),
+                    CourseOwnerInfo = x.OwnerType=="Tenant" ? x.Owners.Where(p=>p.Tenant.Id==x.OwnerId).Select(p=>new CourseOwnerInfo
+                        {
+                            Id = p.Tenant.Id,
+                            Name = p.Tenant.TenantName,
+                            Profession = null,
+                            LogoPath = p.Tenant.LogoPath
+                        }).ToList() : 
+                        x.Owners.Where(a=>a.Educator.Id==x.OwnerId).Select(a=>new CourseOwnerInfo
+                        {
+                            Id = a.Educator.Id,
+                            Name = a.Educator.Name + " "+ a.Educator.Surname,
+                            Profession = a.Educator.Profession,
+                            LogoPath = a.Educator.ProfileImagePath
+                        }).ToList()
                 }).ToListAsync();
             var result = new PagedResultDto<CourseDto>
             {
@@ -348,6 +494,14 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
             course.Title = input.Title;
             course.Price = input.Price;
             course.Quota = input.Quota;
+            course.Address = input.Address;
+            course.OnlineVideo = input.OnlineVideo;
+            course.Certificate = input.Certificate;
+            course.CertificateOfParticipation = input.CertificateOfParticipation;
+            course.Duration = input.Duration;
+            course.Requirements = input.Requirements;
+            course.Teachings = input.Teachings;
+            course.DiscountPrice = input.DiscountPrice;
             course.StartDate = input.StartDate;
             course.EndDate = input.EndDate;
             course.CategoryId = input.CategoryId;
@@ -419,6 +573,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 .Include(x=>x.Owners).ThenInclude(x=>x.Educator)
                 .Include(x => x.Category)
                 .Include(x=>x.Comments)
+                .Include(x=>x.Location)
                 .Select(x => new CourseDto
                 {
                     Id = x.Id,
@@ -427,8 +582,17 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     Quota = x.Quota,
                     Price = x.Price,
                     StartDate = x.StartDate,
+                    Address = x.Address,
+                    OnlineVideo = x.OnlineVideo,
+                    Certificate = x.Certificate,
+                    CertificateOfParticipation = x.CertificateOfParticipation,
+                    Duration = x.Duration,
+                    Requirements = x.Requirements,
+                    Teachings = x.Teachings,
+                    DiscountPrice = x.DiscountPrice,
                     EndDate = x.EndDate,
                     Score = x.Score,
+                    LocationName = x.Location.Name,
                     Category = new CategoryDto
                     {
                         Id = x.Category.Id,
@@ -449,6 +613,20 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                         Profession = e.Educator.Profession,
                         ProfileImgPath = e.Educator.ProfileImagePath
                     }).ToList(),
+                    CourseOwnerInfo = x.OwnerType=="Tenant" ? x.Owners.Where(p=>p.Tenant.Id==x.OwnerId).Select(p=>new CourseOwnerInfo
+                        {
+                            Id = p.Tenant.Id,
+                            Name = p.Tenant.TenantName,
+                            Profession = null,
+                            LogoPath = p.Tenant.LogoPath
+                        }).ToList() : 
+                        x.Owners.Where(a=>a.Educator.Id==x.OwnerId).Select(a=>new CourseOwnerInfo
+                        {
+                            Id = a.Educator.Id,
+                            Name = a.Educator.Name + " "+ a.Educator.Surname,
+                            Profession = a.Educator.Profession,
+                            LogoPath = a.Educator.ProfileImagePath
+                        }).ToList()
                 }).ToListAsync();
             var result = new PagedResultDto<CourseDto>
             {
