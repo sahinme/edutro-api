@@ -44,6 +44,16 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         }
         public async Task<Course> CreateCourse(CreateCourseDto input)
         {
+            if (input.EducatorId == null)
+            {
+                long[] a = new long[0];
+                input.EducatorId = a;
+            }
+            if (input.TenantId == null)
+            {
+                long[] b = new long[0];
+                input.TenantId = b;
+            }
             if (input.EducatorId.Length>0)
             {
                 var isHaveRightEducator = await _checkEdition.HaveCreateCourseRight<Educator>(input.EducatorId);
