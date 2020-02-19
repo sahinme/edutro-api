@@ -25,6 +25,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
         public string LocationName { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public string ImagePath { get; set; }
         public List<CourseOwnerInfo> CourseOwnerInfo { get; set; }
         public CategoryDto Category { get; set; }
         public float Score { get; set; }

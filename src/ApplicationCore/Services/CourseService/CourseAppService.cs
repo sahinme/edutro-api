@@ -430,6 +430,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     Quota = x.Quota,
                     Price = x.Price,
                     StartDate = x.StartDate,
+                    //ImagePath= _blobService.GetImageUrl(x.ImagePath),
                     Address = x.Address,
                     OnlineVideo = x.OnlineVideo,
                     Certificate = x.Certificate,
