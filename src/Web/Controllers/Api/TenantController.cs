@@ -25,7 +25,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpPost]
-        public async Task<IActionResult> CreateTenant(CreateTenantDto input)
+        public async Task<IActionResult> CreateTenant([FromForm] CreateTenantDto input)
         {
             try
             {
@@ -43,6 +43,13 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         public  List<TenantDto> GetAll()
         {
             return  _tenantAppService.GetAll();
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetEducators(long id)
+        {
+           var result = await _tenantAppService.GetEducators(id);
+           return Ok(result);
         }
 
         [HttpDelete]

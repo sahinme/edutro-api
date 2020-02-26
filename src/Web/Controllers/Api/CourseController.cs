@@ -55,6 +55,20 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             var courses =  await _courseAppService.GetCoursesByName(courseName);
             return Ok(courses);
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetEntityCourses(string entityType,long id)
+        {
+            var courses =  await _courseAppService.GetEntityCourses(entityType,id);
+            return Ok(courses);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> SearchCourses(string query,long locationId)
+        {
+            var courses =  await _courseAppService.SearchCourses(query,locationId);
+            return Ok(courses);
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAdvertisingCourses()

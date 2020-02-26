@@ -31,7 +31,9 @@ using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EventService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.LocationService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.QuestionService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService;
 using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EgitimAPI.Infrastructure.Logging;
@@ -92,6 +94,8 @@ namespace Microsoft.eShopWeb.Web
             services.AddScoped<ICategoryAppService, CategoryAppService>();
             services.AddScoped<IEventAppService, EventAppService>();
             services.AddScoped<ICommentAppService, CommentAppService>();
+            services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<IQuestionAppService, QuestionAppService>();
             services.AddScoped<INotificationAppService, NotificationAppService>();
             services.AddScoped<ICheckEdition, CheckEdition>();
             services.AddScoped<IBlobService, BlobService>();

@@ -7,6 +7,8 @@ using EgitimAPI.ApplicationCore.Services.UserService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
+using Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -16,16 +18,21 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
     {
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
+        private readonly ITenantAppService _tenantAppService;
+        private readonly IEducatorAppService _educatorAppService;
 
-        public TokenController(IConfiguration configuration,IUserService userService)
+        public TokenController(IConfiguration configuration,IUserService userService
+        , ITenantAppService tenantAppService , IEducatorAppService educatorAppService)
         {
             _configuration = configuration;
             _userService = userService;
+            _tenantAppService = tenantAppService;
+            _educatorAppService = educatorAppService;
         }
         
         [AllowAnonymous]
         [HttpPost]
-        [Route("token")]
+        [Route("userToken")]
         public async Task<IActionResult>  Post([FromBody]LoginDto request)
         {
             if (ModelState.IsValid)
@@ -33,7 +40,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                 var isUserValid = await _userService.Login(request); 
                 if (!isUserValid)
                 {
-                    throw new Exception("Username or password invalid !");
+                    throw new Exception("Kullannıcı adı veya şifre yanlış !");
                 }
  
                 var claims = new[]
@@ -56,5 +63,71 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             }
             return BadRequest();
         }
+        
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("tenantOrEducatorToken")]
+        public async Task<IActionResult> Post([FromBody]TenantOrEducatorLoginDto request)
+        {
+            if (ModelState.IsValid)
+            {
+                if (request.EntityType == "Tenant")
+                {
+                    var isUserValid = await _tenantAppService.Login(request); 
+                    if (!isUserValid)
+                    {
+                        throw new Exception("Kullanici adı veya şifre yanlış !");
+                    }
+ 
+                    var claims = new[]
+                    {
+                        new Claim(JwtRegisteredClaimNames.Sub, request.Email),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    };
+ 
+                    var token = new JwtSecurityToken
+                    (
+                        issuer: _configuration["Issuer"], 
+                        audience: _configuration["Audience"],
+                        claims: claims,
+                        expires: DateTime.UtcNow.AddDays(30), // 30 gün geçerli olacak
+                        notBefore: DateTime.UtcNow,
+                        signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SigningKey"])),//appsettings.json içerisinde bulunan signingkey değeri
+                            SecurityAlgorithms.HmacSha256)
+                    );
+                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+                }
+
+                if (request.EntityType == "Educator")
+                {
+                    var isUserValid = await _educatorAppService.Login(request); 
+                    if (!isUserValid)
+                    {
+                        throw new Exception("Kullanici adı veya şifre yanlış !");
+                    }
+ 
+                    var claims = new[]
+                    {
+                        new Claim(JwtRegisteredClaimNames.Sub, request.Email),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    };
+ 
+                    var token = new JwtSecurityToken
+                    (
+                        issuer: _configuration["Issuer"], 
+                        audience: _configuration["Audience"],
+                        claims: claims,
+                        expires: DateTime.UtcNow.AddDays(30), // 30 gün geçerli olacak
+                        notBefore: DateTime.UtcNow,
+                        signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SigningKey"])),//appsettings.json içerisinde bulunan signingkey değeri
+                            SecurityAlgorithms.HmacSha256)
+                    );
+                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+                }
+            }
+            return BadRequest();
+        }
+        
+      
     }
 }
