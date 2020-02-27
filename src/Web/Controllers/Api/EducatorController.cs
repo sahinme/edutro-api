@@ -17,7 +17,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpPost]
-        public async Task<IActionResult> CreateEducator(CreateEducatorDto input)
+        public async Task<IActionResult> CreateEducator([FromForm] CreateEducatorDto input)
         {
             try
             {

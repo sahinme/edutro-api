@@ -1,15 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EgitimAPI.ApplicationCore.Services.UserService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
+using Microsoft.EgitimAPI.ApplicationCore.Services.BlobService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Services.PasswordHasher;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,23 +24,31 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
     {
         private readonly IAsyncRepository<Educator> _educatorRepository;
         private readonly IAsyncRepository<TenantEducator> _tenantEducatorRepository;
+        private readonly IBlobService _blobService;
 
         public EducatorAppService(IAsyncRepository<Educator> educatorRepository,
-            IAsyncRepository<TenantEducator> tenantEducatorRepository
+            IAsyncRepository<TenantEducator> tenantEducatorRepository,
+            IBlobService blobService
         )
         {
             _educatorRepository = educatorRepository;
             _tenantEducatorRepository = tenantEducatorRepository;
+            _blobService = blobService;
         }
         
         public async Task<Educator> CreateEducator(CreateEducatorDto input)
         {
+            var logoPath = await _blobService.InsertFile(input.File);
+            var hashedPassword = SecurePasswordHasherHelper.Hash(input.Password);
             var educator = new Educator
             {
                 Name = input.Name,
                 Surname = input.Surname,
+                Email = input.Email,
+                Password = hashedPassword,
                 Profession = input.Profession,
                 Resume = input.Resume,
+                ProfileImagePath = logoPath
             };
             await _educatorRepository.AddAsync(educator);
             
@@ -55,6 +68,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                     Surname = x.Surname,
                     Profession = x.Profession,
                     Resume = x.Resume,
+                    ProfileImagePath = BlobService.BlobService.GetImageUrl(x.ProfileImagePath),
                     Score = x.Score,
                     EducatorTenants = x.EducatorTenants.Where(tenant=>tenant.IsAccepted).Select(tenant => new EducatorTenantDto
                     {
@@ -95,6 +109,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                     Surname = x.Surname,
                     Profession = x.Profession,
                     Resume = x.Resume,
+                    ProfileImagePath = BlobService.BlobService.GetImageUrl(x.ProfileImagePath),
                     Score = x.Score,
                     EducatorTenants = x.EducatorTenants.Where(tenant=>tenant.IsAccepted).Select(tenant => new EducatorTenantDto
                     {
@@ -134,6 +149,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                     Surname = x.Surname,
                     Profession = x.Profession,
                     Resume = x.Resume,
+                    ProfileImagePath = BlobService.BlobService.GetImageUrl(x.ProfileImagePath),
                     Score = x.Score,
                     EducatorTenants = x.EducatorTenants.Where(tenant=>tenant.IsAccepted).Select(tenant => new EducatorTenantDto
                     {
@@ -192,6 +208,28 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
 
             await _educatorRepository.UpdateAsync(educator);
             return educator;
+        }
+        
+        public async Task<EducatorLoginDto> Login(TenantOrEducatorLoginDto input)
+        {
+            var user = await _educatorRepository.GetAll()
+                .FirstOrDefaultAsync(x => x.Email == input.Email);
+            if (user == null)
+            {
+                throw new Exception("There is no user!");
+            }
+            var decodedPassword = SecurePasswordHasherHelper.Verify(input.Password, user.Password);
+            if (!decodedPassword)
+            {
+                return null;
+            }
+            
+            var result = new EducatorLoginDto
+            {
+                Id = user.Id, EntityType = EntityType.Educator, Name = user.Name,Surname = user.Surname
+            };
+
+            return result;
         }
         
     }

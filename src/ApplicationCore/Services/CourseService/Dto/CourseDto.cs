@@ -55,6 +55,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
     
     public class CourseOwnerInfo
     {
+        public string EntityType { get; set; }
         public string Name { get; set; }
         public long Id { get; set; }
         public string LogoPath { get; set; }

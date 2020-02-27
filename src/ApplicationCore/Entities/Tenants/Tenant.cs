@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Answers;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Comments;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Editions;
@@ -7,6 +8,7 @@ using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Events;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Locations;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Questions;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants
@@ -14,6 +16,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants
     public class Tenant:BaseEntity,IAggregateRoot
     {
         public bool IsPremium { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
         public float Score { get; set; }
         public string TenantName { get; set; }
@@ -31,6 +34,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants
         
         public  IList<GivenEvent> GivenEvents { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<Answer> Answers { get; set; }
 
         public IList<AdvertisingCourse> AdvertisingCourses { get; set; }
     }

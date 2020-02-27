@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Answers;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Categories;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Comments;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
@@ -7,6 +8,7 @@ using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Events;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Locations;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Questions;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
@@ -16,7 +18,7 @@ using Newtonsoft.Json;
 namespace Microsoft.EgitimAPI.Infrastructure.Data
 {
 
-    //dotnet ef migrations add fırst --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
+    //dotnet ef migrations add questionsSSS --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
 
     public class EgitimContext : DbContext
     {
@@ -55,6 +57,10 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
 
         public DbSet<Edition> Editions { get; set; }
 
+        public DbSet<Question> Questions { get; set; }
+
+        public DbSet<Answer> Answers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             
@@ -88,6 +94,20 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
 
             #endregion
             
+            builder.Entity<Answer>()
+                .HasOne(e => e.Educator)
+                .WithMany(c => c.Answers)
+                .HasForeignKey(ec => ec.EntityId);
+            
+            builder.Entity<Answer>()
+                .HasOne(e => e.Tenant)
+                .WithMany(c => c.Answers)
+                .HasForeignKey(ec => ec.EntityId);
+            
+            builder.Entity<Answer>()
+                .HasOne(e => e.User)
+                .WithMany(c => c.Answers)
+                .HasForeignKey(ec => ec.EntityId);
         }
         
     }

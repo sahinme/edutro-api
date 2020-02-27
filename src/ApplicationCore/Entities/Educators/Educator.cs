@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Answers;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Comments;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Editions;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Events;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Questions;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
@@ -15,6 +17,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Educators
     {
         public string Name { get; set; }
         public string Surname { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
         public float Score { get; set; }
         public string Profession { get; set; }
         //Kisa ozgecmis bilgileri
@@ -24,6 +28,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Educators
         public bool IsPremium { get; set; }
         public IList<TenantEducator.TenantEducator> EducatorTenants { get; set; }
         public virtual IList<GivenCourse> GivenCourses { get; set; }
+        public ICollection<Answer> Answers { get; set; }
         public  IList<GivenEvent> GivenEvents { get; set; }
         public IList<AdvertisingCourse> AdvertisingCourses { get; set; }
         public ICollection<Comment> Comments { get; set; }

@@ -30,6 +30,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Courses
         public bool CertificateOfParticipation { get; set; }
         public bool OnlineVideo { get; set; }
         public string Requirements { get; set; }
+        public string ShortDescription { get; set; }
         public string Teachings { get; set; }
         public long CategoryId { get; set; }
         public AdvertisingState AdvertisingState { get; set; }

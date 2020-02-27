@@ -11,6 +11,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto
         public string Profession { get; set; }
         //Kisa ozgecmis bilgileri
         public string Resume { get; set; }
+        public string ProfileImagePath { get; set; }
         public float Score { get; set; }
         public List<EducatorTenantDto> EducatorTenants { get; set; }
         public List<CourseDto> Courses { get; set; }

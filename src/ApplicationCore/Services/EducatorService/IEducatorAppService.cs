@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using EgitimAPI.ApplicationCore.Services.UserService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto;
 
@@ -14,5 +15,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
         Task<List<EducatorDto>> GetEducatorByName(string educatorName);
         Task<EducatorDto> GetEducatorById(long educatorId);
         Task HandleSubscribeTenant(SubscribeDto input);
+        Task<EducatorLoginDto> Login(TenantOrEducatorLoginDto input);
     }
 }

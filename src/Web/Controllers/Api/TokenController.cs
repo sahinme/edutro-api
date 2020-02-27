@@ -67,14 +67,14 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         [AllowAnonymous]
         [HttpPost]
         [Route("tenantOrEducatorToken")]
-        public async Task<IActionResult> Post([FromBody]TenantOrEducatorLoginDto request)
+        public async Task<IActionResult> Post([FromBody] TenantOrEducatorLoginDto request)
         {
             if (ModelState.IsValid)
             {
                 if (request.EntityType == "Tenant")
                 {
-                    var isUserValid = await _tenantAppService.Login(request); 
-                    if (!isUserValid)
+                    var loginData = await _tenantAppService.Login(request); 
+                    if (loginData==null)
                     {
                         throw new Exception("Kullanici adı veya şifre yanlış !");
                     }
@@ -95,17 +95,18 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                         signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SigningKey"])),//appsettings.json içerisinde bulunan signingkey değeri
                             SecurityAlgorithms.HmacSha256)
                     );
-                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token),loginData });
                 }
 
                 if (request.EntityType == "Educator")
                 {
-                    var isUserValid = await _educatorAppService.Login(request); 
-                    if (!isUserValid)
+                    var loginData = await _educatorAppService.Login(request); 
+                    if (loginData==null)
                     {
                         throw new Exception("Kullanici adı veya şifre yanlış !");
                     }
  
+                    
                     var claims = new[]
                     {
                         new Claim(JwtRegisteredClaimNames.Sub, request.Email),
@@ -122,7 +123,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                         signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SigningKey"])),//appsettings.json içerisinde bulunan signingkey değeri
                             SecurityAlgorithms.HmacSha256)
                     );
-                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+                    return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token),loginData });
                 }
             }
             return BadRequest();

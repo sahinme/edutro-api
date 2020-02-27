@@ -1,19 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 using AutoMapper;
+using EgitimAPI.ApplicationCore.Services.UserService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
+using Microsoft.EgitimAPI.ApplicationCore.Services.BlobService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CommentService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Services.PasswordHasher;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,19 +29,23 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
         private readonly IAsyncRepository<Tenant> _tenantRepository;
         private readonly IAsyncRepository<TenantEducator> _tenantEducatorRepository;
         private readonly INotificationAppService _notificationAppService;
-
+        private readonly IBlobService _blobService;
         public TenantAppService(IAsyncRepository<Tenant> tenantRepository,IMapper mapper,
             IAsyncRepository<TenantEducator> tenantEducatorRepository,
-            INotificationAppService notificationAppService
+            INotificationAppService notificationAppService,
+            IBlobService blobService
             )
         {
             _tenantRepository = tenantRepository;
             _tenantEducatorRepository = tenantEducatorRepository;
             _notificationAppService = notificationAppService;
+            _blobService = blobService;
         }
         
         public async Task CreateTenant(CreateTenantDto input)
         {
+           
+            var hashedPassword = SecurePasswordHasherHelper.Hash(input.Password);
             var user = new Tenant
             {
                 TenantName = input.TenantName,
@@ -44,12 +53,17 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                 IsPremium = input.IsPremium,
                 PhoneNumber = input.PhoneNumber,
                 PhoneNumber2 = input.PhoneNumber2,
-                Password = input.Password,
+                Password = hashedPassword,
+                Email = input.Email,
                 AboutUs = input.AboutUs,
                 Title = input.Title,
                 LocationId = input.LocationId,
-                LogoPath = input.LogoPath
             };
+            if (input.LogoFile!=null)
+            {
+                var logoPath = await _blobService.InsertFile(input.LogoFile);
+                user.LogoPath = logoPath;
+            }
             await _tenantRepository.AddAsync(user);
         }
 
@@ -65,8 +79,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                     TenantName = x.TenantName,
                     Score = x.Score,
                     PhoneNumber = x.PhoneNumber,
+                    LogoPath = BlobService.BlobService.GetImageUrl(x.LogoPath),
                     PhoneNumber2 = x.PhoneNumber2,
-                    LogoPath = x.LogoPath,
                     IsPremium = x.IsPremium,
                     Title = x.Title,
                     AboutUs = x.AboutUs,
@@ -98,8 +112,27 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                 }).FirstOrDefaultAsync(x=>x.Id==id);
             if (result==null)
             {
-                throw new Exception("this tenant dont exist!");
+                throw new Exception("Bu kullanıcı bulunamadı");
             }
+            return result;
+        }
+        
+          public async Task<List<TenantEducatorListDto>> GetEducators(long id)
+          {
+              var result = await _tenantRepository.GetAll()
+                  .Include(x => x.TenantEducators).ThenInclude(x => x.Educator)
+                  .Where(x => x.Id == id).Select(x => new TenantEducatorListDto
+                  {
+                      TenantEducators = x.TenantEducators.Where(e => e.IsDeleted == false).Select(e =>
+                          new TenantEducatorsDto
+                          {
+                              Id = e.Educator.Id,
+                              Name = e.Educator.Name,
+                              Surname = e.Educator.Surname,
+                              Profession = e.Educator.ProfileImagePath,
+                              ProfileImagePath = e.Educator.ProfileImagePath
+                          }).ToList()
+                  }).ToListAsync();
             return result;
         }
 
@@ -107,45 +140,16 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
         public  List<TenantDto> GetAll()
         {
             var model =  _tenantRepository.GetAll()
-                .Include(x=>x.TenantEducators).ThenInclude(x=>x.Educator)
-                .Include(x=>x.GivenCourses).ThenInclude(x=>x.Course).ThenInclude(x=>x.Category)
-                .Include(x=>x.Comments)
                 .Include(x=>x.Location)
                 .Where(x => x.IsDeleted == false).Select(x => new TenantDto
             {
                 Id = x.Id,
                 TenantName = x.TenantName,
                 Score = x.Score,
-                PhoneNumber = x.PhoneNumber,
                 LocationName = x.Location.Name,
-                PhoneNumber2 = x.PhoneNumber2,
                 Title = x.Title,
-                AboutUs = x.AboutUs,
-                LogoPath = x.LogoPath,
-                IsPremium = x.IsPremium,
+                LogoPath = BlobService.BlobService.GetImageUrl(x.LogoPath),
                 Address = x.Address,
-                TenantEducators = x.TenantEducators.Where(educator=>educator.IsAccepted).Select(educator => new TenantEducatorDto
-                {
-                    EducatorId = educator.Educator.Id,
-                    EducatorName = educator.Educator.Name+" "+educator.Educator.Surname,
-                    Profession = educator.Educator.Profession
-                }).ToList(),
-                Courses = x.GivenCourses.Select(course=>new CourseDto
-                {
-                    Id = course.Course.Id,
-                    Title = course.Course.Title,
-                    Description = course.Course.Description,
-                    StartDate = course.Course.StartDate,
-                    EndDate = course.Course.EndDate,
-                    Quota = course.Course.Quota,
-                    Price = course.Course.Price,
-                    Category = new CategoryDto
-                    {
-                        DisplayName = course.Course.Category.DisplayName,
-                        Id = course.Course.Category.Id,
-                        Description = course.Course.Category.Description,
-                    }
-                }).ToList(),
             }).ToList();
 
             return model;
@@ -183,6 +187,28 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                 Content = tenant.TenantName+" "+"sizi eğitmen olarak eklemek istiyor.",
                 NotifyContentType = NotifyContentType.SubscribeRequest
             });
+        }
+        
+        public async Task<TenantLoginDto> Login(TenantOrEducatorLoginDto input)
+        {
+            var user = await _tenantRepository.GetAll()
+                .FirstOrDefaultAsync(x => x.Email == input.Email);
+            if (user == null)
+            {
+                throw new Exception("There is no user!");
+            }
+            var decodedPassword = SecurePasswordHasherHelper.Verify(input.Password, user.Password);
+            if (!decodedPassword)
+            {
+                return null;
+            }
+
+            var result = new TenantLoginDto
+            {
+                Id = user.Id, EntityType = EntityType.Tenant, TenantName = user.TenantName
+            };
+
+            return result;
         }
     }
 }

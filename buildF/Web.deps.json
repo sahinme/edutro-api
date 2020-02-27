@@ -3302,6 +3302,7 @@
         "dependencies": {
           "Ardalis.GuardClauses": "1.2.9",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "7.0.0",
+          "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.EntityFrameworkCore": "2.2.6",
           "System.Security.Claims": "4.3.0",
           "WindowsAzure.Storage": "9.3.3"
@@ -8123,6 +8124,7 @@
         "dependencies": {
           "Ardalis.GuardClauses": "1.2.9",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "7.0.0",
+          "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.EntityFrameworkCore": "2.2.6",
           "System.Security.Claims": "4.3.0",
           "WindowsAzure.Storage": "9.3.3"

@@ -22,7 +22,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.BlobService
         {
             string containerUrl = "edutrocontainer";
             string url =
-                "DefaultEndpointsProtocol=https;AccountName=edutrostorage;AccountKey=y/du5yukFcdZ6A7Z6gJd//pYk+//QbosxpEx52VJE2XkMSKzI7npZywOiuNQXvAV0uM6rnirTWw1XU3M7wrWGw==;EndpointSuffix=core.windows.net";
+                "DefaultEndpointsProtocol=https;AccountName=edutrostorageaccount;AccountKey=i+39A6nr6OdF54X7z2CIlZvn9aN8j2Bi6Eo7g9HPH1zYj1wdgYKNC1n/QUPNke+ucnomaxsxd7pSFkN0JgdoXw==;EndpointSuffix=core.windows.net";
             try
             {
                 var imageName = GetImageName();
@@ -49,9 +49,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.BlobService
             }
         }
 
-        public  string GetImageUrl(string path)
+        public static string GetImageUrl(string path)
         {
-            return "https://edutrostorageaccount.blob.core.windows.net/" + path;
+            return "https://edutrostorageaccount.blob.core.windows.net/edutrocontainer/" + path;
         }
     }
 }

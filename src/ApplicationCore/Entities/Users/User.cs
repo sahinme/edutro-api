@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Answers;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Questions;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Users
@@ -31,6 +33,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Users
         public string EmailAddress { get; set; }
 
         public string PhoneNumber { get; set; }
+        public ICollection<Answer> Answers { get; set; }
     }
     
 }
