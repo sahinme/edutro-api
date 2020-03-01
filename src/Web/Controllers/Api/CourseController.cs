@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
 
@@ -57,7 +58,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpGet]
-        public async Task<IActionResult> GetEntityCourses(string entityType,long id)
+        public async Task<IActionResult> GetEntityCourses(EntityType entityType,long id)
         {
             var courses =  await _courseAppService.GetEntityCourses(entityType,id);
             return Ok(courses);
@@ -127,7 +128,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpPut]
-        public async Task UpdateCourse(UpdateCourseDto input)
+        public async Task UpdateCourse([FromForm] UpdateCourseDto input)
         {
             try
             {

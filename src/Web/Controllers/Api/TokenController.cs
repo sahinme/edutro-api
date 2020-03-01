@@ -1,5 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                 var isUserValid = await _userService.Login(request); 
                 if (!isUserValid)
                 {
-                    throw new Exception("Kullannıcı adı veya şifre yanlış !");
+                    return NotFound();
                 }
  
                 var claims = new[]
@@ -76,7 +77,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                     var loginData = await _tenantAppService.Login(request); 
                     if (loginData==null)
                     {
-                        throw new Exception("Kullanici adı veya şifre yanlış !");
+                        return NotFound();
                     }
  
                     var claims = new[]
@@ -103,7 +104,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                     var loginData = await _educatorAppService.Login(request); 
                     if (loginData==null)
                     {
-                        throw new Exception("Kullanici adı veya şifre yanlış !");
+                        return NotFound();
                     }
  
                     

@@ -10,6 +10,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto
         public bool IsPremium { get; set; }
         public string TenantName { get; set; }
         public string Address { get; set; }
+        public string Email { get; set; }
         public float Score { get; set; }
         public string Title { get; set; }
         public string AboutUs { get; set; }

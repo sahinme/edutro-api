@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
@@ -82,7 +83,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 OnlineVideo = input.OnlineVideo,
                 Certificate = input.Certificate,
                 CertificateOfParticipation = input.CertificateOfParticipation,
-                Duration = input.Duration,
+                DurationCount = input.DurationCount,
+                DurationType = input.DurationType,
                 Requirements = input.Requirements,
                 Teachings = input.Teachings,
                 Price = input.Price,
@@ -93,6 +95,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 LocationId = input.LocationId,
                 OwnerType = input.OwnerType,
                 OwnerId = input.OwnerId,
+                ShortDescription = input.ShortDescription,
                 ImagePath = imagePath
             };
             
@@ -139,11 +142,13 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 Quota = x.Quota,
                 Price = x.Price,
                 StartDate = x.StartDate,
+                ShortDescription = x.ShortDescription,
                 Address = x.Address,
                 OnlineVideo = x.OnlineVideo,
                 Certificate = x.Certificate,
                 CertificateOfParticipation = x.CertificateOfParticipation,
-                Duration = x.Duration,
+                DurationCount = x.DurationCount,
+                DurationType = x.DurationType,
                 ImagePath = BlobService.BlobService.GetImageUrl(x.ImagePath),
                 Requirements = x.Requirements,
                 Teachings = x.Teachings,
@@ -151,6 +156,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 EndDate = x.EndDate,
                 Score = x.Score,
                 LocationName = x.Location.Name,
+                LocationId = x.LocationId,
                 Category = new CategoryDto
                 {
                     Id = x.Category.Id,
@@ -171,9 +177,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     Profession = e.Educator.Profession,
                     ProfileImgPath = e.Educator.ProfileImagePath
                 }).ToList(),
-                CourseOwnerInfo = x.OwnerType=="Tenant" ? x.Owners.Where(p=>p.Tenant.Id==x.OwnerId).Select(p=>new CourseOwnerInfo
+                CourseOwnerInfo = x.OwnerType==EntityType.Tenant ? x.Owners.Where(p=>p.Tenant.Id==x.OwnerId).Select(p=>new CourseOwnerInfo
                     {
-                        EntityType = "Tenant",
+                        EntityType = EntityType.Tenant,
                         Id = p.Tenant.Id,
                         Name = p.Tenant.TenantName,
                         Profession = p.Tenant.Title,
@@ -181,7 +187,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     }).ToList() : 
                     x.Owners.Where(a=>a.Educator.Id==x.OwnerId).Select(a=>new CourseOwnerInfo
                     {
-                        EntityType = "Educator",
+                        EntityType = EntityType.Educator,
                         Id = a.Educator.Id,
                         Name = a.Educator.Name + " "+ a.Educator.Surname,
                         Profession = a.Educator.Profession,
@@ -213,7 +219,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                         Price = x.Course.Price,
                         StartDate = x.Course.StartDate,
                         EndDate = x.Course.EndDate,
-                        CourseOwnerInfo = x.Course.OwnerType=="Tenant" ? x.Course.Owners.Where(p=>p.Tenant.Id==x.Course.OwnerId).Select(p=>new CourseOwnerInfo
+                        CourseOwnerInfo = x.Course.OwnerType==EntityType.Tenant ? x.Course.Owners.Where(p=>p.Tenant.Id==x.Course.OwnerId).Select(p=>new CourseOwnerInfo
                             {
                                 Id = p.Tenant.Id,
                                 Name = p.Tenant.TenantName,
@@ -362,6 +368,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 Description = x.Description,
                 Quota = x.Quota,
                 Price = x.Price,
+                ShortDescription = x.ShortDescription,
                 ImagePath = BlobService.BlobService.GetImageUrl(x.ImagePath),
                 StartDate = x.StartDate,
                 EndDate = x.EndDate,
@@ -377,21 +384,24 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
             return result;
         }
         
-        public async Task<PagedResultDto<GetCourseDto>> GetEntityCourses(string entityType,long id)
+        public async Task<PagedResultDto<GetCourseDto>> GetEntityCourses(EntityType entityType,long id)
         {
-            if (entityType == "Tenant")
+            if (entityType == EntityType.Tenant)
             {
                 var courses = await _courseRepository.GetAll().Include(x=>x.Category)
                     .Include(x=>x.Location)
                     .Include(x => x.Owners).ThenInclude(x => x.Tenant)
-                    .Where(x => x.OwnerType == "Tenant" && x.OwnerId==id)
+                    .Where(x => x.OwnerType == EntityType.Tenant && x.OwnerId==id)
                     .Select(x => new GetCourseDto
                     {
                         Id = x.Id,
                         Title = x.Title,
                         Price = x.Price,
+                        CreatedDate = x.CreatedDate,
+                        LocationName = x.Location.Name,
                         DiscountPrice = x.DiscountPrice,
-                        ShortDescription = x.ShortDescription
+                        ShortDescription = x.ShortDescription,
+                        ImagePath = BlobService.BlobService.GetImageUrl(x.ImagePath)
                     }).ToListAsync();
             
                 var result = new PagedResultDto<GetCourseDto>
@@ -405,7 +415,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
             var courses2 = await _courseRepository.GetAll().Include(x=>x.Category)
                 .Include(x=>x.Location)
                 .Include(x => x.Owners).ThenInclude(x => x.Educator)
-                .Where(x => x.OwnerType == "Educator" && x.OwnerId==id)
+                .Where(x => x.OwnerType == EntityType.Educator && x.OwnerId==id)
                 .Select(x => new GetCourseDto
                 {
                     Id = x.Id,
@@ -500,15 +510,35 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
             course.OnlineVideo = input.OnlineVideo;
             course.Certificate = input.Certificate;
             course.CertificateOfParticipation = input.CertificateOfParticipation;
-            course.Duration = input.Duration;
             course.Requirements = input.Requirements;
             course.Teachings = input.Teachings;
+            course.DurationCount = input.DurationCount;
+            course.DurationType = input.DurationType;
             course.DiscountPrice = input.DiscountPrice;
             course.StartDate = input.StartDate;
             course.EndDate = input.EndDate;
             course.CategoryId = input.CategoryId;
 
+            if (input.File!=null)
+            {
+                var imagePath = await _blobService.InsertFile(input.File);
+                course.ImagePath = imagePath;
+
+            }
+            
             await _courseRepository.UpdateAsync(course);
+            
+            if (input.EducatorId == null)
+            {
+                long[] a = new long[0];
+                input.EducatorId = a;
+            }
+            
+            if (input.TenantId == null)
+            {
+                long[] b = new long[0];
+                input.TenantId = b;
+            }
 
             var givenCourses = await _givenCourseRepository.GetAll().Where(x => x.CourseId == input.Id).ToListAsync();
             var count = (input.TenantId.Length > input.EducatorId.Length)
@@ -579,13 +609,15 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     Description = x.Description,
                     Quota = x.Quota,
                     Price = x.Price,
+                    ShortDescription = x.ShortDescription,
                     StartDate = x.StartDate,
                     Address = x.Address,
                     OnlineVideo = x.OnlineVideo,
                     ImagePath = BlobService.BlobService.GetImageUrl(x.ImagePath),
                     Certificate = x.Certificate,
                     CertificateOfParticipation = x.CertificateOfParticipation,
-                    Duration = x.Duration,
+                    DurationCount = x.DurationCount,
+                    DurationType = x.DurationType,
                     Requirements = x.Requirements,
                     Teachings = x.Teachings,
                     DiscountPrice = x.DiscountPrice,

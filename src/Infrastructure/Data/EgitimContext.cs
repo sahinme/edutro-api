@@ -18,7 +18,7 @@ using Newtonsoft.Json;
 namespace Microsoft.EgitimAPI.Infrastructure.Data
 {
 
-    //dotnet ef migrations add questionsSSS --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
+    //dotnet ef migrations add durationc --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
 
     public class EgitimContext : DbContext
     {

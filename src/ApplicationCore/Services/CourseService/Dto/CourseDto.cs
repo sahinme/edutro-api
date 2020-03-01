@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Comments;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto;
@@ -12,8 +13,10 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
         public long Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public string ShortDescription { get; set; }
         public decimal DiscountPrice { get; set; }
-        public string Duration { get; set; }
+        public string DurationType { get; set; }
+        public int DurationCount { get; set; }
         public bool Certificate { get; set; }
         public bool CertificateOfParticipation { get; set; }
         public bool OnlineVideo { get; set; }
@@ -23,6 +26,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
         public int Quota { get; set; }    
         public decimal Price { get; set; }
         public string LocationName { get; set; }
+        public long LocationId { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string ImagePath { get; set; }
@@ -55,7 +59,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
     
     public class CourseOwnerInfo
     {
-        public string EntityType { get; set; }
+        public EntityType EntityType { get; set; }
         public string Name { get; set; }
         public long Id { get; set; }
         public string LogoPath { get; set; }

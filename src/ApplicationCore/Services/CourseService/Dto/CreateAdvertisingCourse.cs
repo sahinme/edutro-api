@@ -1,4 +1,5 @@
 using System;
+using Microsoft.EgitimAPI.ApplicationCore.Entities;
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
 {
@@ -8,7 +9,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
         public string Description { get; set; }
         public long LocationId { get; set; }
         public long OwnerId { get; set; }
-        public string OwnerType { get; set; }
+        public EntityType OwnerType { get; set; }
         public int Quota { get; set; }
         public decimal Price { get; set; }
         public DateTime? StartDate { get; set; }

@@ -81,6 +81,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                     PhoneNumber = x.PhoneNumber,
                     LogoPath = BlobService.BlobService.GetImageUrl(x.LogoPath),
                     PhoneNumber2 = x.PhoneNumber2,
+                    Email = x.Email,
                     IsPremium = x.IsPremium,
                     Title = x.Title,
                     AboutUs = x.AboutUs,

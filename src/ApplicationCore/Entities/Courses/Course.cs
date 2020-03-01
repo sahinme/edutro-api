@@ -19,13 +19,14 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Courses
         public string ImagePath { get; set; }
         public string Address { get; set; }
         public long OwnerId { get; set; }
-        public string OwnerType { get; set; }
+        public EntityType OwnerType { get; set; }
         public decimal Price { get; set; }
         public decimal DiscountPrice { get; set; }
         public float Score { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public string Duration { get; set; }
+        public string DurationType { get; set; }
+        public int DurationCount { get; set; }
         public bool Certificate { get; set; }
         public bool CertificateOfParticipation { get; set; }
         public bool OnlineVideo { get; set; }
