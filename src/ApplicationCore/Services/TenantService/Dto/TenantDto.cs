@@ -15,6 +15,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto
         public string Title { get; set; }
         public string AboutUs { get; set; }
         public string LocationName { get; set; }
+        public long LocationId { get; set; }
         public string PhoneNumber { get; set; }
         public string PhoneNumber2 { get; set; }
         public string LogoPath { get; set; } 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using EgitimAPI.ApplicationCore.Services.UserService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
 
@@ -13,6 +14,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
         List<TenantDto> GetAll();
         Task Delete(long id);
         Task AddEducator(CreateTenantEducatorDto input);
+        Task<Tenant> UpdateTenant(UpdateTenantDto input);
         Task<List<TenantEducatorListDto>> GetEducators(long id);
         Task<TenantLoginDto> Login(TenantOrEducatorLoginDto input);
 

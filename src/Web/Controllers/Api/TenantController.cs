@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
@@ -37,6 +38,13 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                 Console.WriteLine(e);
                 throw;
             }
+        }
+        
+        [HttpPut]
+        public async Task<Tenant> UpdateTenant([FromForm] UpdateTenantDto input)
+        {
+            var result = await _tenantAppService.UpdateTenant(input);
+            return result;
         }
         
         [HttpGet]

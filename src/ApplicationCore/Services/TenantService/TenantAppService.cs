@@ -67,6 +67,29 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
             await _tenantRepository.AddAsync(user);
         }
 
+        public async Task<Tenant> UpdateTenant(UpdateTenantDto input)
+        {
+            var tenant = await _tenantRepository.GetByIdAsync(input.Id);
+            if (tenant == null)
+            {
+                throw new Exception("Tenant bulunamadi");
+            }
+            tenant.Address = input.Address;
+            tenant.Email = input.Email;
+            tenant.LocationId = input.LocationId;
+            tenant.Title = input.Title;
+            tenant.TenantName = input.TenantName;
+            tenant.AboutUs = input.AboutUs;
+            tenant.PhoneNumber = input.PhoneNumber;
+            tenant.PhoneNumber2 = input.PhoneNumber2;
+
+            if (input.LogoFile == null) return tenant;
+            var filePath = await _blobService.InsertFile(input.LogoFile);
+            tenant.LogoPath = filePath;
+
+            return tenant;
+        }
+
         public async Task<TenantDto> GetTenantById(long id)
         {
             var result = await _tenantRepository.GetAll()
@@ -86,7 +109,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                     Title = x.Title,
                     AboutUs = x.AboutUs,
                     Address = x.Address,
-                    
+                    LocationId = x.Location.Id,
                     LocationName = x.Location.Name,
                     TenantEducators = x.TenantEducators.Where(educator=>educator.IsAccepted).Select(educator => new TenantEducatorDto
                     {
@@ -169,6 +192,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                 await _tenantEducatorRepository.UpdateAsync(educatorTenant);
             }
         }
+        
 
         public async Task AddEducator(CreateTenantEducatorDto input)
         {

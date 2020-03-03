@@ -8,6 +8,8 @@ using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Events;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Locations;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.PostComments;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Posts;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Questions;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
@@ -18,7 +20,7 @@ using Newtonsoft.Json;
 namespace Microsoft.EgitimAPI.Infrastructure.Data
 {
 
-    //dotnet ef migrations add durationc --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
+    //dotnet ef migrations add blog --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
 
     public class EgitimContext : DbContext
     {
@@ -27,39 +29,25 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
         }
         
         public DbSet<User> Users { get; set; }
-
         public DbSet<Course> Courses { get; set; }
-
         public DbSet<FavoriteCourse> FavoriteCourses { get; set; }
-
         public DbSet<Educator> Educators { get; set; }
-
         public DbSet<Tenant> Tenants { get; set; }
-
         public DbSet<Category> Categories { get; set; }
-
         public DbSet<GivenCourse> GivenCourses { get; set; }
-
         public DbSet<CourseContent> CourseContents { get; set; }
-        
         public DbSet<TenantEducator> TenantEducator { get; set; }
-
         public DbSet<Comment> Comments { get; set; }
-        
         public DbSet<Event> Events { get; set; }
         public DbSet<Location> Locations { get; set; }
-
         public DbSet<GivenEvent> GivenEvents { get; set; }
-
         public DbSet<AdvertisingCourse> AdvertisingCourses { get; set; }
-
         public DbSet<Notification> Notifications { get; set; }
-
         public DbSet<Edition> Editions { get; set; }
-
         public DbSet<Question> Questions { get; set; }
-
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<PostComment> PostComments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
