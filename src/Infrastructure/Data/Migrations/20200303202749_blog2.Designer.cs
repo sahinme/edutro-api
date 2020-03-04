@@ -4,14 +4,16 @@ using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EgitimContext))]
-    partial class EgitimContextModelSnapshot : ModelSnapshot
+    [Migration("20200303202749_blog2")]
+    partial class blog2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,11 +105,15 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<DateTime>("ModifiedDate");
 
+                    b.Property<long?>("PostId");
+
                     b.Property<long>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EntityId");
+
+                    b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
 
@@ -566,8 +572,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("CategoryId");
-
                     b.Property<string>("Content");
 
                     b.Property<DateTime>("CreatedDate");
@@ -576,9 +580,9 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<long?>("EducatorId");
 
-                    b.Property<int>("EntityType");
+                    b.Property<long>("EntityId");
 
-                    b.Property<string>("ImagePath");
+                    b.Property<int>("EntityType");
 
                     b.Property<bool>("IsDeleted");
 
@@ -595,8 +599,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     b.Property<string>("Title");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("EducatorId");
 
@@ -806,6 +808,10 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                         .HasForeignKey("EntityId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Posts.Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId");
+
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Users.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -906,7 +912,7 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.PostComments.PostComment", b =>
                 {
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Posts.Post", "Post")
-                        .WithMany("PostComments")
+                        .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -918,11 +924,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.Posts.Post", b =>
                 {
-                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Categories.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Educators.Educator", "Educator")
                         .WithMany()
                         .HasForeignKey("EducatorId");

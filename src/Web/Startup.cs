@@ -33,6 +33,7 @@ using Microsoft.EgitimAPI.ApplicationCore.Services.EventService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.LocationService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.PostService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.QuestionService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService;
 using Microsoft.EgitimAPI.Infrastructure.Data;
@@ -98,6 +99,7 @@ namespace Microsoft.eShopWeb.Web
             services.AddScoped<IQuestionAppService, QuestionAppService>();
             services.AddScoped<INotificationAppService, NotificationAppService>();
             services.AddScoped<ICheckEdition, CheckEdition>();
+            services.AddScoped<IPostAppService, PostAppService>();
             services.AddScoped<IBlobService, BlobService>();
             services.Configure<CatalogSettings>(Configuration);
             services.AddSingleton<IUriComposer>(new UriComposer(Configuration.Get<CatalogSettings>()));

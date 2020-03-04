@@ -4,14 +4,16 @@ using Microsoft.EgitimAPI.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(EgitimContext))]
-    partial class EgitimContextModelSnapshot : ModelSnapshot
+    [Migration("20200303202834_blog3")]
+    partial class blog3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -566,8 +568,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("CategoryId");
-
                     b.Property<string>("Content");
 
                     b.Property<DateTime>("CreatedDate");
@@ -576,9 +576,9 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
                     b.Property<long?>("EducatorId");
 
-                    b.Property<int>("EntityType");
+                    b.Property<long>("EntityId");
 
-                    b.Property<string>("ImagePath");
+                    b.Property<int>("EntityType");
 
                     b.Property<bool>("IsDeleted");
 
@@ -595,8 +595,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
                     b.Property<string>("Title");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("EducatorId");
 
@@ -918,11 +916,6 @@ namespace Microsoft.eShopWeb.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.EgitimAPI.ApplicationCore.Entities.Posts.Post", b =>
                 {
-                    b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Categories.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Microsoft.EgitimAPI.ApplicationCore.Entities.Educators.Educator", "Educator")
                         .WithMany()
                         .HasForeignKey("EducatorId");
