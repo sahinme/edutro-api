@@ -153,8 +153,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                               Id = e.Educator.Id,
                               Name = e.Educator.Name,
                               Surname = e.Educator.Surname,
-                              Profession = e.Educator.ProfileImagePath,
-                              ProfileImagePath = e.Educator.ProfileImagePath
+                              Profession = e.Educator.Profession,
+                              ProfileImagePath = BlobService.BlobService.GetImageUrl(e.Educator.ProfileImagePath)
                           }).ToList()
                   }).ToListAsync();
             return result;
@@ -196,6 +196,13 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
 
         public async Task AddEducator(CreateTenantEducatorDto input)
         {
+            var isExist = await _tenantEducatorRepository.GetAll()
+                .Where(x => x.EducatorId == input.EducatorId && x.TenantId == input.TenantId).ToListAsync();
+            
+            if (isExist.Count != 0 )
+            {
+                throw new Exception("Bu egitmen zaten ekli!");
+            }
             var tenant = await _tenantRepository.GetByIdAsync(input.TenantId);
             var model = new TenantEducator
             {

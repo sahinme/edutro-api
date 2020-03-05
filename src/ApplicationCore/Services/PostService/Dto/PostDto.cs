@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.PostComments;
@@ -11,6 +12,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.PostService.Dto
         public string Title { get; set; }
         public string Content { get; set; }
         public string ImagePath { get; set; }
+        public DateTime CreatedDate { get; set; }
         public string ShortDescription { get; set; }
         public EntityDto EntityDto { get; set; }
         public CategoryDto Category { get; set; }

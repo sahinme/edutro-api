@@ -100,7 +100,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.PostService
                     Id = x.Id,
                     Content = x.Content,
                     Title = x.Title,
-                    ImagePath = x.ImagePath,
+                    CreatedDate = x.CreatedDate,
+                    ImagePath =BlobService.BlobService.GetImageUrl(x.ImagePath),
                     ShortDescription = x.ShortDescription,
                     Category = new CategoryDto
                     {
@@ -130,7 +131,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.PostService
                     Id = x.Id,
                     Content = x.Content,
                     Title = x.Title,
-                    ImagePath = x.ImagePath,
+                    ImagePath =BlobService.BlobService.GetImageUrl(x.ImagePath),
                     ShortDescription = x.ShortDescription,
                     Category = new CategoryDto
                     {
@@ -164,7 +165,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.PostService
                     Id = x.Id,
                     Content = x.Content,
                     Title = x.Title,
-                    ImagePath = x.ImagePath,
+                    ImagePath =BlobService.BlobService.GetImageUrl(x.ImagePath),
                     ShortDescription = x.ShortDescription,
                     Category = new CategoryDto
                     {
@@ -203,7 +204,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.PostService
                     Id = x.Id,
                     Content = x.Content,
                     Title = x.Title,
-                    ImagePath = x.ImagePath,
+                    ImagePath =BlobService.BlobService.GetImageUrl(x.ImagePath),
                     ShortDescription = x.ShortDescription,
                     Category = new CategoryDto
                     {
@@ -245,7 +246,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.PostService
                     Id = x.Id,
                     Content = x.Content,
                     Title = x.Title,
-                    ImagePath = x.ImagePath,
+                    ImagePath =BlobService.BlobService.GetImageUrl(x.ImagePath),
+                    CreatedDate = x.CreatedDate,
                     ShortDescription = x.ShortDescription,
                     Category = new CategoryDto
                     {
@@ -286,8 +288,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.PostService
                     {
                         Id = x.Id,
                         Content = x.Content,
-                        ImagePath = x.ImagePath,
+                        ImagePath =BlobService.BlobService.GetImageUrl(x.ImagePath),
                         Title = x.Title,
+                        CreatedDate = x.CreatedDate,
                         ShortDescription = x.ShortDescription,
                         Category = new CategoryDto
                         {
@@ -318,7 +321,8 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.PostService
                     Id = x.Id,
                     Content = x.Content,
                     Title = x.Title,
-                    ImagePath = x.ImagePath,
+                    ImagePath =BlobService.BlobService.GetImageUrl(x.ImagePath),
+                    CreatedDate = x.CreatedDate,
                     ShortDescription = x.ShortDescription,
                     Category = new CategoryDto
                     {

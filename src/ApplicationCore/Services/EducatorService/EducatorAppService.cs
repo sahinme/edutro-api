@@ -209,6 +209,21 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
             await _educatorRepository.UpdateAsync(educator);
             return educator;
         }
+
+        public async Task<List<EducatorSearchDto>> GetEducatorByEmail(string email)
+        {
+            var educator = await _educatorRepository.GetAll()
+                .Where(x => x.IsDeleted == false && x.Email == email || x.Email.Contains(email)).Select(x =>
+                    new EducatorSearchDto
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Surname = x.Surname,
+                        Profession = x.Profession,
+                        LogoPath = BlobService.BlobService.GetImageUrl(x.ProfileImagePath)
+                    }).ToListAsync();
+            return educator;
+        }
         
         public async Task<EducatorLoginDto> Login(TenantOrEducatorLoginDto input)
         {
