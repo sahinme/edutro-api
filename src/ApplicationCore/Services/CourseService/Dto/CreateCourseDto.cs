@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Posts;
 
 namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
 {
@@ -15,6 +16,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
         public decimal DiscountPrice { get; set; }
         public string DurationType { get; set; }
         public int DurationCount { get; set; }
+        public PostState CourseState { get; set; }
         public bool Certificate { get; set; }
         public bool CertificateOfParticipation { get; set; }
         public bool OnlineVideo { get; set; }

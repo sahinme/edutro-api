@@ -39,9 +39,10 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.QuestionService
 
         public async Task<QuestionDetail> GetQuestionById(long id)
         {
-            var question = await _questionRepository.GetAll().Include(x => x.Answers)
-                .ThenInclude(x => x.Educator).Include(x => x.Answers).ThenInclude(x => x.Tenant)
-                .Include(x => x.Answers).ThenInclude(x => x.User).Where(x => x.Id == id).Select(x => new QuestionDetail
+            var question = await _questionRepository.GetAll().Where(x => x.Id == id)
+                .Include(x=>x.User)
+                .Include(x => x.Answers)
+                .Select(x => new QuestionDetail
                 {
                     Id = x.Id,
                     Title = x.Title,

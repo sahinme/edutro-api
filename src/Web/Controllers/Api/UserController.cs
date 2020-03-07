@@ -18,9 +18,9 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             _userService = userService;
             _emailSender = emailSender;
         }
-        
-        [HttpGet]
-        public async Task<User> GetById(int id)
+
+        [HttpGet("by-id")]
+        public async Task<User> GetUser(int id)
         {
             return await _userService.GetUserById(id);
         }

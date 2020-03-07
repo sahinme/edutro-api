@@ -230,7 +230,7 @@ namespace Microsoft.eShopWeb.Web
             }
             
             app.UseCors(
-                options => options.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials()
+                options => options.WithOrigins("http://localhost:3000", "http://dev.edutro.com").AllowAnyMethod().AllowAnyHeader().AllowCredentials()
             );
 
             app.UseHttpsRedirection();

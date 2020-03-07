@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 namespace Microsoft.EgitimAPI.Infrastructure.Data
 {
 
-    //dotnet ef migrations add blog-image --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
+    //dotnet ef migrations add courseState --context egitimcontext -p ../Infrastructure/Infrastructure.csproj -s Web.csproj -o Data/Migrations
 
     public class EgitimContext : DbContext
     {
@@ -81,21 +81,6 @@ namespace Microsoft.EgitimAPI.Infrastructure.Data
                 .HasForeignKey(ec => ec.EntityId);
 
             #endregion
-            
-            builder.Entity<Answer>()
-                .HasOne(e => e.Educator)
-                .WithMany(c => c.Answers)
-                .HasForeignKey(ec => ec.EntityId);
-            
-            builder.Entity<Answer>()
-                .HasOne(e => e.Tenant)
-                .WithMany(c => c.Answers)
-                .HasForeignKey(ec => ec.EntityId);
-            
-            builder.Entity<Answer>()
-                .HasOne(e => e.User)
-                .WithMany(c => c.Answers)
-                .HasForeignKey(ec => ec.EntityId);
         }
         
     }

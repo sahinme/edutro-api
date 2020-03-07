@@ -13,5 +13,6 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto
         public string Surname { get; set; }
         public string Profession { get; set; }
         public string ProfileImagePath { get; set; }
+        public bool IsAccepted { get; set; }
     }
 }

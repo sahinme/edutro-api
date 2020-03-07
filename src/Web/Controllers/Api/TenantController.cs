@@ -18,9 +18,9 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         {
             _tenantAppService = tenantAppService;
         }
-        
-        [HttpGet]
-        public async Task<TenantDto> GetById(long id)
+
+        [HttpGet("by-id")]
+        public async Task<TenantDto> GetDetails(long id)
         {
             return await _tenantAppService.GetTenantById(id);
         }

@@ -22,9 +22,9 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         {
             return await _postAppService.GetAllPosts();
         }
-        
-        [HttpGet]
-        public async Task<PostDto>  GetPostById(long id)
+
+        [HttpGet("by-id")]
+        public async Task<PostDto>  GetPost(long id)
         {
             return await   _postAppService.GetPostById(id);
         }

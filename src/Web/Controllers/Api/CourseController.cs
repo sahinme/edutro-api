@@ -106,8 +106,8 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             return Ok(result);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetCourseById(long id)
+        [HttpGet("by-id")]
+        public async Task<IActionResult> GetCourse(long id)
         {
             var result = await _courseAppService.GetCourseById(id);
             return Ok(result);
@@ -133,6 +133,21 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             try
             {
                 await _courseAppService.UpdateCourse(input);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        
+        
+        [HttpPut]
+        public async Task SuspendOrActive(long id)
+        {
+            try
+            {
+                await _courseAppService.SuspendOrActivateCourse(id);
             }
             catch (Exception e)
             {

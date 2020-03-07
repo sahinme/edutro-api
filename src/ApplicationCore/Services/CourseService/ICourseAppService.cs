@@ -17,6 +17,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         Task<PagedResultDto<CourseDto>> SearchCourses(string query,long locationId);
         Task<PagedResultDto<CourseDto>> GetCoursesByCategory(long categoryId);
         Task DeleteCourse(long id);
+        Task SuspendOrActivateCourse(long id);
         Task UpdateCourse(UpdateCourseDto course);
         Task<PagedResultDto<CourseDto>> GetAllCourses();
         Task<CourseDto> GetCourseById(long id);

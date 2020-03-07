@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using EgitimAPI.ApplicationCore.Services.UserService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.TenantEducator;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Users;
@@ -14,6 +15,8 @@ using Microsoft.EgitimAPI.ApplicationCore.Services.Category.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService.Dto;
+using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService.Dto;
 using Microsoft.EgitimAPI.ApplicationCore.Services.PasswordHasher;
 using Microsoft.EgitimAPI.ApplicationCore.Services.TenantService.Dto;
 using Microsoft.EntityFrameworkCore;
@@ -25,14 +28,17 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
         private readonly IAsyncRepository<Educator> _educatorRepository;
         private readonly IAsyncRepository<TenantEducator> _tenantEducatorRepository;
         private readonly IBlobService _blobService;
+        private readonly INotificationAppService _notificationAppService;
 
         public EducatorAppService(IAsyncRepository<Educator> educatorRepository,
             IAsyncRepository<TenantEducator> tenantEducatorRepository,
+            INotificationAppService notificationAppService,
             IBlobService blobService
         )
         {
             _educatorRepository = educatorRepository;
             _tenantEducatorRepository = tenantEducatorRepository;
+            _notificationAppService = notificationAppService;
             _blobService = blobService;
         }
         
@@ -182,6 +188,21 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService
                 .FirstOrDefaultAsync(x => x.EducatorId == input.EducatorId && x.TenantId == input.TenantId);
             relation.IsAccepted = input.IsAccepted;
             await _tenantEducatorRepository.UpdateAsync(relation);
+            
+            var educator = await _educatorRepository.GetByIdAsync(input.EducatorId);
+            if (input.IsAccepted)
+            {
+                await _notificationAppService.CreateNotify(new CreateNotificationDto
+                {
+                    OwnerId = input.TenantId,
+                    OwnerType = EntityType.Tenant,
+                    SenderId = input.TenantId,
+                    SenderType = EntityType.Educator,
+                    Content = 
+                        educator.Profession+" "+educator.Name+" "+educator.Surname+" "+"Eğitmen Ekleme Talebinizi Kabul Etti.",
+                    NotifyContentType = NotifyContentType.SubscribeResponse
+                });
+            }
         }
 
         public async Task Delete(long id)

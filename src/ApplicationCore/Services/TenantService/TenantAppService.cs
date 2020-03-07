@@ -151,6 +151,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
                           new TenantEducatorsDto
                           {
                               Id = e.Educator.Id,
+                              IsAccepted = e.IsAccepted,
                               Name = e.Educator.Name,
                               Surname = e.Educator.Surname,
                               Profession = e.Educator.Profession,
@@ -213,9 +214,10 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.TenantService
             await _notificationAppService.CreateNotify(new CreateNotificationDto
             {
                 OwnerId = input.EducatorId,
-                OwnerType = "Educator",
+                OwnerType = EntityType.Educator,
                 SenderId = input.TenantId,
-                SenderType = "Tenant",
+                SenderType = EntityType.Tenant,
+                Title = "Ekleme isteği",
                 Content = tenant.TenantName+" "+"sizi eğitmen olarak eklemek istiyor.",
                 NotifyContentType = NotifyContentType.SubscribeRequest
             });

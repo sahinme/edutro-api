@@ -23,6 +23,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService.Dto
         public string Requirements { get; set; }
         public string Teachings { get; set; }
         public string Address { get; set; }
+        public bool IsActive { get; set; }
         public int Quota { get; set; }    
         public decimal Price { get; set; }
         public string LocationName { get; set; }

@@ -11,9 +11,9 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications
         public long ContentId { get; set; }
         public string Title { get; set; }
         public long SenderId { get; set; }
-        public string SenderType { get; set; }
+        public EntityType SenderType { get; set; }
         public long OwnerId { get; set; }
-        public string OwnerType { get; set; }
+        public EntityType OwnerType { get; set; }
         public NotifyContentType NotifyContentType { get; set; }
         
         [DefaultValue(false)]

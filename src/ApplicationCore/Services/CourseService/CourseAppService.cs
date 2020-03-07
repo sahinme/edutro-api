@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Courses;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Educators;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Posts;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services.BlobService;
@@ -88,6 +89,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 Requirements = input.Requirements,
                 Teachings = input.Teachings,
                 Price = input.Price,
+                IsActive = true,
                 DiscountPrice = input.DiscountPrice,
                 StartDate = input.StartDate,
                 EndDate = input.EndDate,
@@ -142,6 +144,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                 Quota = x.Quota,
                 Price = x.Price,
                 StartDate = x.StartDate,
+                IsActive = x.IsActive,
                 ShortDescription = x.ShortDescription,
                 Address = x.Address,
                 OnlineVideo = x.OnlineVideo,
@@ -360,7 +363,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         {
             var courses = await _courseRepository.GetAll().Include(x=>x.Category)
                 .Include(x=>x.Location)
-                .Where(x => x.Title.Contains(courseName) || x.Description.Contains(courseName))
+                .Where(x => x.IsActive &&  x.Title.Contains(courseName) || x.Description.Contains(courseName))
                 .Select(x => new CourseDto
             {
                 Id = x.Id,
@@ -398,6 +401,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                         Title = x.Title,
                         Price = x.Price,
                         CreatedDate = x.CreatedDate,
+                        IsActive = x.IsActive,
                         LocationName = x.Location.Name,
                         DiscountPrice = x.DiscountPrice,
                         ShortDescription = x.ShortDescription,
@@ -421,6 +425,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
                     Id = x.Id,
                     Title = x.Title,
                     Price = x.Price,
+                    IsActive = x.IsActive,
                     DiscountPrice = x.DiscountPrice,
                     ShortDescription = x.ShortDescription
                 }).ToListAsync();
@@ -437,7 +442,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         {
             var courses = await _courseRepository.GetAll().Include(x=>x.Category)
                 .Include(x=>x.Location)
-                .Where(x => x.Title.Contains(query) || x.Description.Contains(query) && x.LocationId == locationId && x.IsDeleted==false )
+                .Where(x => x.Title.Contains(query) || x.Description.Contains(query) && x.LocationId == locationId && x.IsDeleted==false && x.IsActive )
                 .Select(x => new CourseDto
                 {
                     Id = x.Id,
@@ -464,7 +469,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         {
             var courses = await _courseRepository.GetAll().Include(x => x.Category)
                 .Include(x=>x.Location)
-                .Where(x => x.Category.Id == categoryId).Select(x => new CourseDto
+                .Where(x => x.Category.Id == categoryId && x.IsActive).Select(x => new CourseDto
                 {
                     Id = x.Id,
                     Title = x.Title,
@@ -487,9 +492,16 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
         }
 
         public async Task DeleteCourse(long id)
+                     {
+                         var course = await _courseRepository.GetByIdAsync(id);
+                         course.IsDeleted = true;
+                         await _courseRepository.UpdateAsync(course);
+        }
+        
+        public async Task SuspendOrActivateCourse(long id)
         {
             var course = await _courseRepository.GetByIdAsync(id);
-            course.IsDeleted = true;
+            course.IsActive = !course.IsActive;
             await _courseRepository.UpdateAsync(course);
         }
 
@@ -600,7 +612,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.CourseService
 
         public async Task<PagedResultDto<CourseDto>> GetAllCourses()
         {
-            var courses = await _courseRepository.GetAll().Where(x => x.IsDeleted == false && x.AdvertisingState != AdvertisingState.Stopped)
+            var courses = await _courseRepository.GetAll().Where(x => x.IsDeleted == false && x.IsActive)
                 .Include(x=>x.Location)
                 .Select(x => new CourseDto
                 {

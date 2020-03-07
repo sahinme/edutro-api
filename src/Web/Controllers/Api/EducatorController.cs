@@ -82,9 +82,9 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             var educators = await _educatorAppService.GetEducatorByEmail(email);
             return educators;
         }
-        
-        [HttpGet]
-        public async Task<IActionResult> GetEducatorById(long educatorId)
+
+        [HttpGet("by-id")]
+        public async Task<IActionResult> GetEducator(long educatorId)
         {
             var educator = await _educatorAppService.GetEducatorById(educatorId);
             return Ok(educator);

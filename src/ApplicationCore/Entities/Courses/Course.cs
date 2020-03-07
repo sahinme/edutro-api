@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Categories;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Comments;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Locations;
+using Microsoft.EgitimAPI.ApplicationCore.Entities.Posts;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Tenants;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 
@@ -21,6 +22,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Entities.Courses
         public long OwnerId { get; set; }
         public EntityType OwnerType { get; set; }
         public decimal Price { get; set; }
+        public bool IsActive { get; set; }
         public decimal DiscountPrice { get; set; }
         public float Score { get; set; }
         public DateTime? StartDate { get; set; }

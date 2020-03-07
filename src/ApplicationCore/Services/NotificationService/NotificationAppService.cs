@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Entities.Notifications;
 using Microsoft.EgitimAPI.ApplicationCore.Interfaces;
 using Microsoft.EgitimAPI.ApplicationCore.Services.Dto;
@@ -34,7 +35,7 @@ namespace Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService
             await _notificationRepository.AddAsync(notify);
         }
 
-        public async Task<PagedResultDto<NotificationDto>> GetEntityNotifications(long ownerId, string ownerType)
+        public async Task<PagedResultDto<NotificationDto>> GetEntityNotifications(long ownerId, EntityType ownerType)
         {
             var notifies = await _notificationRepository.GetAll().Where(x => x.OwnerId == ownerId && x.OwnerType == ownerType)
                 .Select(x => new NotificationDto

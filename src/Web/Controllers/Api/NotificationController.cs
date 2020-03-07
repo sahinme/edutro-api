@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.NotificationService.Dto;
 
@@ -22,7 +23,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNotifies(long ownerId, string ownerType)
+        public async Task<IActionResult> GetNotifies(long ownerId, EntityType ownerType)
         {
             var result = await _notificationAppService.GetEntityNotifications(ownerId, ownerType);
             return Ok(result);
