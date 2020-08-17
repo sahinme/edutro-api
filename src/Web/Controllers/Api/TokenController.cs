@@ -1,6 +1,5 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,15 +37,15 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         {
             if (ModelState.IsValid)
             {
-                var isUserValid = await _userService.Login(request); 
-                if (!isUserValid)
+                var userInfo = await _userService.Login(request); 
+                if (userInfo==null)
                 {
-                    return NotFound();
+                    return Ok(new {success = false, status = 404, message = "Email veya sifre yanlis"});
                 }
  
                 var claims = new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, request.Username),
+                    new Claim(JwtRegisteredClaimNames.Sub, request.UsernameOrEmail),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
  
@@ -60,7 +59,7 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
                     signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SigningKey"])),//appsettings.json içerisinde bulunan signingkey değeri
                         SecurityAlgorithms.HmacSha256)
                 );
-                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+                return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token),userInfo });
             }
             return BadRequest();
         }

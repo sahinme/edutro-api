@@ -29,6 +29,7 @@ using Microsoft.EgitimAPI.ApplicationCore.Services.CategoryService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CommentService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.CourseService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EducatorService;
+using Microsoft.EgitimAPI.ApplicationCore.Services.EnrollmentService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.EventService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.GivenCourseService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.LocationService;
@@ -84,7 +85,15 @@ namespace Microsoft.eShopWeb.Web
             ConfigureCookieSettings(services);
 
             IdentityModelEventSource.ShowPII = true;
-            
+
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();
+                builder.AllowCredentials();
+            }));
+
             services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
 
             services.AddScoped<IUserService, UserService>();
@@ -92,6 +101,7 @@ namespace Microsoft.eShopWeb.Web
             services.AddScoped<ICourseAppService, CourseAppService>();
             services.AddScoped<IGivenCourseAppService, GivenCourseAppService>();
             services.AddScoped<IEducatorAppService, EducatorAppService>();
+            services.AddScoped<IEnrollmentAppService, EnrollmentAppService>();
             services.AddScoped<ICategoryAppService, CategoryAppService>();
             services.AddScoped<IEventAppService, EventAppService>();
             services.AddScoped<ICommentAppService, CommentAppService>();
@@ -136,7 +146,6 @@ namespace Microsoft.eShopWeb.Web
                 options.ConstraintMap["slugify"] = typeof(SlugifyParameterTransformer);
             });
             
-            services.AddCors(); 
             services.Configure<MyConfig>(Configuration.GetSection("MyConfig"));
             services.AddMvc(options =>
             {
@@ -196,6 +205,13 @@ namespace Microsoft.eShopWeb.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCors(
+                builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+
             //app.UseDeveloperExceptionPage();
             app.UseHealthChecks("/health",
                 new HealthCheckOptions
@@ -229,10 +245,6 @@ namespace Microsoft.eShopWeb.Web
                 app.UseHsts();
             }
             
-            app.UseCors(
-                options => options.WithOrigins("http://localhost:3000", "http://dev.edutro.com").AllowAnyMethod().AllowAnyHeader().AllowCredentials()
-            );
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();

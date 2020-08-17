@@ -128,11 +128,12 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpPut]
-        public async Task UpdateCourse([FromForm] UpdateCourseDto input)
+        public async Task<IActionResult> UpdateCourse([FromForm] UpdateCourseDto input)
         {
             try
             {
                 await _courseAppService.UpdateCourse(input);
+                return Ok();
             }
             catch (Exception e)
             {

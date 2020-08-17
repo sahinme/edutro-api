@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EgitimAPI.ApplicationCore.Entities;
 using Microsoft.EgitimAPI.ApplicationCore.Services.PostService;
 using Microsoft.EgitimAPI.ApplicationCore.Services.PostService.Dto;
+
 
 namespace Microsoft.EgitimAPI.Web.Controllers.Api
 {

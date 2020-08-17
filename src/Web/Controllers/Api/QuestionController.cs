@@ -25,6 +25,13 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
         }
         
         [HttpGet]
+        public async Task<IActionResult> GetUserQuestions(long userId)
+        {
+            var result = await _questionAppService.GetUserQuestions(userId);
+            return Ok( new {success=true,message="Questions successfuly fetched",result} );
+        }
+        
+        [HttpGet]
         public async Task<IActionResult> GetQuestionDetail(long id)
         {
             var result = await _questionAppService.GetQuestionById(id);

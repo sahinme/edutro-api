@@ -82,5 +82,12 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             await _tenantAppService.AddEducator(input);
             return Ok();
         }
+        
+        [HttpDelete]
+        public async Task<IActionResult> RemoveEducator(CreateTenantEducatorDto input)
+        {
+            await _tenantAppService.RemoveEducator(input);
+            return Ok();
+        }
     }
 }

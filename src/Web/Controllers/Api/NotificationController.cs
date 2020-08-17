@@ -21,6 +21,13 @@ namespace Microsoft.EgitimAPI.Web.Controllers.Api
             await _notificationAppService.CreateNotify(input);
             return Ok();
         }
+        
+        [HttpPut]
+        public async Task<IActionResult> MarkAsRead(long id)
+        {
+            var result = await _notificationAppService.MarkAsRead(id);
+            return Ok(result);
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetNotifies(long ownerId, EntityType ownerType)
